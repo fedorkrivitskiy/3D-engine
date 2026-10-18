@@ -1,0 +1,18 @@
+---
+Checks: >
+  -*
+  misc-include-cleaner,
+  readability-redundant-preprocessor,
+  modernize-deprecated-headers
+
+HeaderFilterRegex: '.*'
+
+CheckOptions:
+  - key: misc-include-cleaner.InsertStyle
+    value: 'Angle'
+
+  - key: misc-include-cleaner.IgnoreHeaders
+    value: ''
+
+  - key: misc-include-cleaner.CPlusPlusStandard
+    value: 'c++20'

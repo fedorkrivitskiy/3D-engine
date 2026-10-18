@@ -1,0 +1,6 @@
+* text=auto
+
+*.glsl text
+*.hlsl text
+
+*.qrc text
