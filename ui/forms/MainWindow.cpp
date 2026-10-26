@@ -9,6 +9,7 @@
 
 #include "Camera.hpp"
 #include "FPSCounter.hpp"
+#include "Settings/SettingsModel.hpp"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -41,6 +42,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     timer_->setInterval(0);
     timer_->start();
+
+    settingsModel_ = new SettingsModel(this);
+    ui->settingsWidget->setModel(settingsModel_);
 }
 
 MainWindow::~MainWindow()

@@ -10,6 +10,7 @@ QT_END_NAMESPACE
 
 class QTimer;
 
+class SettingsModel;
 class FPSCounter;
 class Camera;
 
@@ -29,6 +30,8 @@ class MainWindow : public QMainWindow
 
   private:
     Ui::MainWindow *ui;
+
+    SettingsModel *settingsModel_{nullptr};
 
     std::unique_ptr<FPSCounter> counter_;
     std::unique_ptr<Camera> camera_;

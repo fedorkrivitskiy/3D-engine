@@ -65,7 +65,6 @@ qt_add_executable(${PROJECT_NAME}
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
     resources/resources.qrc
-    ui/widgets/SettingsWidget.hpp ui/widgets/SettingsWidget.cpp ui/widgets/SettingsWidget.ui
 )
 
 target_include_directories(
