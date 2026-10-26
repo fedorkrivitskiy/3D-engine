@@ -1,4 +1,4 @@
-#include "RendererWidget.hpp"
+#include "RenderWidget.hpp"
 
 #include <QMouseEvent>
 #include <QOpenGLShader>
@@ -10,11 +10,11 @@
 
 #include "Constants.hpp"
 
-RendererWidget::RendererWidget()
+RenderWidget::RenderWidget()
 {
 }
 
-RendererWidget::~RendererWidget()
+RenderWidget::~RenderWidget()
 {
     // Make sure the context is current when deleting the texture
     // and the buffers.
@@ -23,13 +23,13 @@ RendererWidget::~RendererWidget()
     doneCurrent();
 }
 
-void RendererWidget::mousePressEvent(QMouseEvent *e)
+void RenderWidget::mousePressEvent(QMouseEvent *e)
 {
     // Save mouse press position
     mousePressPosition = QVector2D(e->position());
 }
 
-void RendererWidget::mouseReleaseEvent(QMouseEvent *e)
+void RenderWidget::mouseReleaseEvent(QMouseEvent *e)
 {
     // Mouse release position - mouse press position
     QVector2D diff = QVector2D(e->position()) - mousePressPosition;
@@ -48,7 +48,7 @@ void RendererWidget::mouseReleaseEvent(QMouseEvent *e)
     angularSpeed += acc;
 }
 
-void RendererWidget::updatePhysics()
+void RenderWidget::updatePhysics()
 {
     // Decrease angular speed (friction)
     angularSpeed *= 0.99;
@@ -65,7 +65,7 @@ void RendererWidget::updatePhysics()
     }
 }
 
-void RendererWidget::initializeGL()
+void RenderWidget::initializeGL()
 {
     initializeOpenGLFunctions();
 
@@ -76,7 +76,7 @@ void RendererWidget::initializeGL()
     geometries = new GeometryEngine();
 }
 
-void RendererWidget::initShaders()
+void RenderWidget::initShaders()
 {
     // Compile vertex shader
     if (!program.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/vshader.glsl"))
@@ -95,7 +95,7 @@ void RendererWidget::initShaders()
         close();
 }
 
-void RendererWidget::resizeGL(int w, int h)
+void RenderWidget::resizeGL(int w, int h)
 {
     // Calculate aspect ratio
     qreal aspect = qreal(w) / qreal(h ? h : 1);
@@ -107,7 +107,7 @@ void RendererWidget::resizeGL(int w, int h)
     projection.perspective(Constants::kFOV, aspect, Constants::kZNear, Constants::kZFar);
 }
 
-void RendererWidget::paintGL()
+void RenderWidget::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

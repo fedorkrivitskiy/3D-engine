@@ -13,15 +13,15 @@
 
 class GeometryEngine;
 
-class RendererWidget : public QOpenGLWidget, protected QOpenGLFunctions
+class RenderWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
     Q_OBJECT
 
   public:
     using QOpenGLWidget::QOpenGLWidget;
 
-    RendererWidget();
-    ~RendererWidget();
+    RenderWidget();
+    ~RenderWidget();
 
     void updatePhysics();
 

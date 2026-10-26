@@ -30,7 +30,7 @@
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="RendererWidget" name="renderedFrameLabel">
+   <widget class="RenderWidget" name="renderWidget">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -67,7 +67,7 @@
      <string>Quit</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="settingsButton">
     <property name="geometry">
      <rect>
       <x>200</x>
@@ -85,9 +85,9 @@
      <string>Settings</string>
     </property>
    </widget>
-   <zorder>renderedFrameLabel</zorder>
+   <zorder>renderWidget</zorder>
    <zorder>quitButton</zorder>
-   <zorder>pushButton</zorder>
+   <zorder>settingsButton</zorder>
    <zorder>statsWidget</zorder>
   </widget>
  </widget>
@@ -95,13 +95,13 @@
   <customwidget>
    <class>StatsWidget</class>
    <extends>QWidget</extends>
-   <header location="global">ui/widgets/statswidget.hpp</header>
+   <header location="global">ui/widgets/StatsWidget.hpp</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>RendererWidget</class>
+   <class>RenderWidget</class>
    <extends>QOpenGLWidget</extends>
-   <header location="global">ui/widgets/rendererwidget.hpp</header>
+   <header location="global">ui/widgets/RenderWidget.hpp</header>
   </customwidget>
  </customwidgets>
  <resources/>

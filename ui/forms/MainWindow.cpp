@@ -31,8 +31,8 @@ MainWindow::MainWindow(QWidget *parent)
         counter_->update();
         ui->statsWidget->updateStats();
 
-        ui->renderedFrameLabel->update();
-        ui->renderedFrameLabel->updatePhysics();
+        ui->renderWidget->update();
+        ui->renderWidget->updatePhysics();
     });
 
     timer_->setInterval(0);

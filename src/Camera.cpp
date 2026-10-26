@@ -21,9 +21,9 @@ void Camera::move(const glm::vec3 &move_vector)
 {
     glm::vec3 left = glm::normalize(glm::cross(up_, forward_));
 
-    glm::vec3 left_move_vector = left * (Constants::kCameraSpeed * move_vector.x);
-    glm::vec3 forward_move_vector = forward_ * (Constants::kCameraSpeed * move_vector.y);
-    glm::vec3 up_move_vector = world_up * (Constants::kCameraSpeed * move_vector.z);
+    glm::vec3 left_move_vector = left * move_vector.x;
+    glm::vec3 forward_move_vector = forward_ * move_vector.y;
+    glm::vec3 up_move_vector = world_up * move_vector.z;
     glm::vec3 result_vector = left_move_vector + forward_move_vector + up_move_vector;
 
     eye_ += result_vector;
@@ -34,9 +34,10 @@ void Camera::move(const glm::vec3 &move_vector)
 
 void Camera::rotate(const glm::vec3 &rotation_vector)
 {
-    yaw_ -= rotation_vector.x * Constants::kRotationSensitivity;
-    pitch_ += rotation_vector.y * Constants::kRotationSensitivity;
-    pitch_ = std::clamp(pitch_, -Constants::kMaxCameraPitchRadians, Constants::kMaxCameraPitchRadians);
+    yaw_ -= rotation_vector.x;
+
+    pitch_ =
+        std::clamp(pitch_ + rotation_vector.y, -Constants::kMaxCameraPitchRadians, Constants::kMaxCameraPitchRadians);
 
     forward_ = glm::normalize(
         glm::vec3{std::cos(yaw_) * std::cos(pitch_), std::sin(pitch_), std::sin(yaw_) * std::cos(pitch_)});
