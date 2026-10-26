@@ -25,10 +25,15 @@ class MainWindow : public QMainWindow
     void keyPressEvent(QKeyEvent *event) override;
 
   private:
+    void onSettingsButtonClicked();
+
+  private:
     Ui::MainWindow *ui;
 
     std::unique_ptr<FPSCounter> counter_;
     std::unique_ptr<Camera> camera_;
 
     QTimer *timer_{nullptr};
+
+    bool isSettingsWidgetVisible{true};
 };

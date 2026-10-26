@@ -18,6 +18,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     showFullScreen();
 
+    ui->statsWidget->raise();
+    ui->settingsWidget->setVisible(isSettingsWidgetVisible);
+
     camera_ = std::make_unique<Camera>();
     counter_ = std::make_unique<FPSCounter>();
 
@@ -25,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->statsWidget->setFPSCounter(counter_.get());
 
     connect(ui->quitButton, &QPushButton::clicked, this, &QMainWindow::close);
+    connect(ui->settingsButton, &QPushButton::clicked, this, &MainWindow::onSettingsButtonClicked);
 
     timer_ = new QTimer(this);
     connect(timer_, &QTimer::timeout, this, [this]() {
@@ -69,4 +73,11 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     default:
         break;
     }
+}
+
+void MainWindow::onSettingsButtonClicked()
+{
+    isSettingsWidgetVisible = !isSettingsWidgetVisible;
+
+    ui->settingsWidget->setVisible(isSettingsWidgetVisible);
 }
