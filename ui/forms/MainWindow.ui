@@ -124,7 +124,7 @@
   <customwidget>
    <class>StatsWidget</class>
    <extends>QWidget</extends>
-   <header location="global">ui/widgets/StatsWidget.hpp</header>
+   <header location="global">ui/widgets/StatisticsWidget.hpp</header>
    <container>1</container>
   </customwidget>
   <customwidget>

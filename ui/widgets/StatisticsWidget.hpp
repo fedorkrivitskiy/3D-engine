@@ -1,5 +1,4 @@
-#ifndef STATSWIDGET_H
-#define STATSWIDGET_H
+#pragma once
 
 #include <QWidget>
 
@@ -55,5 +54,3 @@ class StatsWidget : public QWidget
     Camera *camera_{nullptr};
     FPSCounter *counter_{nullptr};
 };
-
-#endif // STATSWIDGET_H

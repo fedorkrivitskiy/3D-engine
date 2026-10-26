@@ -1,5 +1,5 @@
-#include "statswidget.hpp"
-#include "ui_statswidget.h"
+#include "StatisticsWidget.hpp"
+#include "ui_StatisticsWidget.h"
 
 #include <format>
 #include <string>

@@ -1,5 +1,4 @@
-#ifndef SETTINGSWIDGET_HPP
-#define SETTINGSWIDGET_HPP
+#pragma once
 
 #include <QWidget>
 
@@ -19,5 +18,3 @@ class SettingsWidget : public QWidget
   private:
     Ui::SettingsWidget *ui;
 };
-
-#endif // SETTINGSWIDGET_HPP

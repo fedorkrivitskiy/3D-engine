@@ -54,7 +54,7 @@ if(SRC_FILES OR UI_FILES)
 endif()
 
 if(UI_XML)
-  source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/ui PREFIX "Form Files" FILES ${UI_XML})
+  source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/ui PREFIX "Forms Files" FILES ${UI_XML})
 endif()
 
 if(RES)
