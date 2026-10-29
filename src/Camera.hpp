@@ -1,6 +1,6 @@
 #pragma once
 
-#include <glm/vec3.hpp>
+#include <QVector3D>
 
 class Camera
 {
@@ -9,17 +9,17 @@ class Camera
 
     virtual ~Camera() = default;
 
-    void move(const glm::vec3 &direction);
+    void move(const QVector3D &direction);
 
-    void rotate(const glm::vec3 &rotation);
+    void rotate(const QVector3D &rotation);
 
     void setScale(float scale);
 
-    glm::vec3 getEye() const;
+    QVector3D getEye() const;
 
-    glm::vec3 getTarget() const;
+    QVector3D getTarget() const;
 
-    glm::vec3 getUp() const;
+    QVector3D getUp() const;
 
     float getScale() const;
 
@@ -27,10 +27,10 @@ class Camera
     void updateForward();
 
   private:
-    glm::vec3 forward_{0, 0, 0};
-    glm::vec3 eye_{0.0, 0.0, 5.0};
-    glm::vec3 target_{0, 0, 0};
-    glm::vec3 up_{0, 1, 0};
+    QVector3D forward_{0, 0, 0};
+    QVector3D eye_{0.0, 0.0, 5.0};
+    QVector3D target_{0, 0, 0};
+    QVector3D up_{0, 1, 0};
 
     float scale_{1.0f};
     float yaw_{-std::numbers::pi_v<float> / 2};

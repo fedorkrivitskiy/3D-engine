@@ -1,8 +1,7 @@
 #pragma once
 
+#include <QVector3D>
 #include <QWidget>
-
-#include <glm/vec3.hpp>
 
 class FPSCounter;
 class Camera;
@@ -19,9 +18,9 @@ class StatsWidget : public QWidget
   public:
     struct CameraStats
     {
-        glm::vec3 eye{};
-        glm::vec3 target{};
-        glm::vec3 up{};
+        QVector3D eye{};
+        QVector3D target{};
+        QVector3D up{};
         float scale{};
     };
 

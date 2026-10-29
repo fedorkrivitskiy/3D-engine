@@ -1,15 +1,15 @@
 #include "Camera.hpp"
 
+#include <QVector3D>
+#include <QtMath>
 #include <algorithm>
-#include <cmath>
-
-#include <glm/detail/func_geometric.inl>
-
-#include "Constants.hpp"
 
 namespace
 {
-constexpr glm::vec3 world_up{0.0, 1.0, 0.0};
+constexpr QVector3D world_up{0.0f, 1.0f, 0.0f};
+
+constexpr float kMaxCameraPitch = 89.f;
+constexpr float kMaxCameraPitchRadians = std::numbers::pi_v<float> * kMaxCameraPitch / 180.f;
 } // namespace
 
 Camera::Camera()
@@ -17,14 +17,14 @@ Camera::Camera()
     updateForward();
 }
 
-void Camera::move(const glm::vec3 &move_vector)
+void Camera::move(const QVector3D &move_vector)
 {
-    glm::vec3 left = glm::normalize(glm::cross(up_, forward_));
+    QVector3D left = QVector3D::crossProduct(up_, forward_).normalized();
 
-    glm::vec3 left_move_vector = left * move_vector.x;
-    glm::vec3 forward_move_vector = forward_ * move_vector.y;
-    glm::vec3 up_move_vector = world_up * move_vector.z;
-    glm::vec3 result_vector = left_move_vector + forward_move_vector + up_move_vector;
+    QVector3D left_move_vector = left * move_vector.x();
+    QVector3D forward_move_vector = forward_ * move_vector.y();
+    QVector3D up_move_vector = world_up * move_vector.z();
+    QVector3D result_vector = left_move_vector + forward_move_vector + up_move_vector;
 
     eye_ += result_vector;
     target_ += result_vector;
@@ -32,18 +32,17 @@ void Camera::move(const glm::vec3 &move_vector)
     updateForward();
 }
 
-void Camera::rotate(const glm::vec3 &rotation_vector)
+void Camera::rotate(const QVector3D &rotation_vector)
 {
-    yaw_ -= rotation_vector.x;
+    yaw_ -= rotation_vector.x();
 
-    pitch_ =
-        std::clamp(pitch_ + rotation_vector.y, -Constants::kMaxCameraPitchRadians, Constants::kMaxCameraPitchRadians);
+    pitch_ = std::clamp(pitch_ + rotation_vector.y(), -kMaxCameraPitchRadians, kMaxCameraPitchRadians);
 
-    forward_ = glm::normalize(
-        glm::vec3{std::cos(yaw_) * std::cos(pitch_), std::sin(pitch_), std::sin(yaw_) * std::cos(pitch_)});
+    forward_ =
+        QVector3D{std::cos(yaw_) * std::cos(pitch_), std::sin(pitch_), std::sin(yaw_) * std::cos(pitch_)}.normalized();
 
-    glm::vec3 left = glm::normalize(glm::cross(forward_, world_up));
-    up_ = glm::normalize(glm::cross(left, forward_));
+    QVector3D left = QVector3D::crossProduct(forward_, world_up).normalized();
+    up_ = QVector3D::crossProduct(left, forward_).normalized();
     target_ = eye_ + forward_;
 }
 
@@ -52,17 +51,17 @@ void Camera::setScale(float scale)
     scale_ = scale;
 }
 
-glm::vec3 Camera::getEye() const
+QVector3D Camera::getEye() const
 {
     return eye_;
 }
 
-glm::vec3 Camera::getTarget() const
+QVector3D Camera::getTarget() const
 {
     return target_;
 }
 
-glm::vec3 Camera::getUp() const
+QVector3D Camera::getUp() const
 {
     return up_;
 }
@@ -74,5 +73,5 @@ float Camera::getScale() const
 
 void Camera::updateForward()
 {
-    forward_ = glm::normalize(target_ - eye_);
+    forward_ = (target_ - eye_).normalized();
 }

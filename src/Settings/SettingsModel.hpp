@@ -3,18 +3,16 @@
 #include <QObject>
 #include <QString>
 
-#include "Defaults.hpp"
-
 struct CameraSettings
 {
-    float fov{Defaults::Camera::kFov};
-    float zNear{Defaults::Camera::kZNear};
-    float zFar{Defaults::Camera::kZFar};
+    float fov{};
+    float zNear{};
+    float zFar{};
 };
 
 struct ModelSettings
 {
-    QString modelPath{Defaults::Model::kModelPath};
+    QString modelPath{};
 };
 
 class SettingsModel final : public QObject

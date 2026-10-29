@@ -10,9 +10,9 @@
 namespace
 {
 
-std::string toString(const glm::vec3 &vec)
+std::string toString(const QVector3D &vec)
 {
-    return std::format("[{:.2f}, {:.2f}, {:.2f}]", vec.x, vec.y, vec.z);
+    return std::format("[{:.2f}, {:.2f}, {:.2f}]", vec.x(), vec.y(), vec.z());
 }
 
 std::string toString(const StatsWidget::CameraStats &stats)

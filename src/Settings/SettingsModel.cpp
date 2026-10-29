@@ -2,6 +2,8 @@
 
 #include <QSettings>
 
+#include "Defaults.hpp"
+
 namespace
 {
 constexpr auto kCompanyName = "Default";

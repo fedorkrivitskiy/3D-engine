@@ -8,61 +8,15 @@
 
 #include <cmath>
 
-#include "Constants.hpp"
-
-RenderWidget::RenderWidget()
-{
-}
+#include "Camera.hpp"
 
 RenderWidget::~RenderWidget()
 {
-    // Make sure the context is current when deleting the texture
-    // and the buffers.
     makeCurrent();
+
     delete geometries;
+
     doneCurrent();
-}
-
-void RenderWidget::mousePressEvent(QMouseEvent *e)
-{
-    // Save mouse press position
-    mousePressPosition = QVector2D(e->position());
-}
-
-void RenderWidget::mouseReleaseEvent(QMouseEvent *e)
-{
-    // Mouse release position - mouse press position
-    QVector2D diff = QVector2D(e->position()) - mousePressPosition;
-
-    // Rotation axis is perpendicular to the mouse position difference
-    // vector
-    QVector3D n = QVector3D(diff.y(), diff.x(), 0.0).normalized();
-
-    // Accelerate angular speed relative to the length of the mouse sweep
-    qreal acc = diff.length() / 100.0;
-
-    // Calculate new rotation axis as weighted sum
-    rotationAxis = (rotationAxis * angularSpeed + n * acc).normalized();
-
-    // Increase angular speed
-    angularSpeed += acc;
-}
-
-void RenderWidget::updatePhysics()
-{
-    // Decrease angular speed (friction)
-    angularSpeed *= 0.99;
-
-    // Stop rotation when speed goes below threshold
-    if (angularSpeed < 0.01)
-    {
-        angularSpeed = 0.0;
-    }
-    else
-    {
-        // Update rotation
-        rotation = QQuaternion::fromAxisAndAngle(rotationAxis, angularSpeed) * rotation;
-    }
 }
 
 void RenderWidget::initializeGL()
@@ -78,33 +32,57 @@ void RenderWidget::initializeGL()
 
 void RenderWidget::initShaders()
 {
-    // Compile vertex shader
     if (!program.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/vshader.glsl"))
         close();
 
-    // Compile fragment shader
     if (!program.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/fshader.glsl"))
         close();
 
-    // Link shader pipeline
     if (!program.link())
         close();
 
-    // Bind shader pipeline for use
     if (!program.bind())
         close();
 }
 
+void RenderWidget::setCamera(Camera *camera)
+{
+    camera_ = camera;
+}
+
+void RenderWidget::setZNear(float zNear)
+{
+    zNear_ = zNear;
+
+    updateProjectionMatrix();
+}
+
+void RenderWidget::setZFar(float zFar)
+{
+    zFar_ = zFar;
+
+    updateProjectionMatrix();
+}
+
+void RenderWidget::setFov(float fov)
+{
+    fov_ = fov;
+
+    updateProjectionMatrix();
+}
+
 void RenderWidget::resizeGL(int w, int h)
 {
-    // Calculate aspect ratio
-    qreal aspect = qreal(w) / qreal(h ? h : 1);
+    aspectRatio_ = float(w) / float(h ? h : 1);
 
-    // Reset projection
-    projection.setToIdentity();
+    updateProjectionMatrix();
+}
 
-    // Set perspective projection
-    projection.perspective(Constants::kFOV, aspect, Constants::kZNear, Constants::kZFar);
+void RenderWidget::updateProjectionMatrix()
+{
+    projection_.setToIdentity();
+
+    projection_.perspective(fov_, aspectRatio_, zNear_, zFar_);
 }
 
 void RenderWidget::paintGL()
@@ -117,11 +95,15 @@ void RenderWidget::paintGL()
 
     program.bind();
 
-    QMatrix4x4 matrix;
-    matrix.translate(0.0, -1.0, -5.0);
-    matrix.rotate(rotation);
+    if (!camera_)
+    {
+        return;
+    }
 
-    program.setUniformValue("mvp_matrix", projection * matrix);
+    QMatrix4x4 cameraMatrix;
+    cameraMatrix.lookAt(camera_->getEye(), camera_->getTarget(), camera_->getUp());
+
+    program.setUniformValue("mvp_matrix", projection_ * cameraMatrix);
 
     geometries->drawModel(&program);
 

@@ -12,6 +12,7 @@
 #include <QVector2D>
 
 class GeometryEngine;
+class Camera;
 
 class RenderWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -20,29 +21,38 @@ class RenderWidget : public QOpenGLWidget, protected QOpenGLFunctions
   public:
     using QOpenGLWidget::QOpenGLWidget;
 
-    RenderWidget();
+    RenderWidget() = default;
+
     ~RenderWidget();
 
-    void updatePhysics();
+    void setCamera(Camera *camera);
+
+    void setZNear(float zNear);
+
+    void setZFar(float zFar);
+
+    void setFov(float fov);
 
   protected:
-    void mousePressEvent(QMouseEvent *e) override;
-    void mouseReleaseEvent(QMouseEvent *e) override;
-
     void initializeGL() override;
+
     void resizeGL(int w, int h) override;
+
     void paintGL() override;
+
+  private:
+    void updateProjectionMatrix();
 
     void initShaders();
 
   private:
     QOpenGLShaderProgram program;
+
     GeometryEngine *geometries = nullptr;
+    Camera *camera_ = nullptr;
 
-    QMatrix4x4 projection;
+    float zNear_{}, zFar_{}, fov_{};
+    float aspectRatio_{};
 
-    QVector2D mousePressPosition;
-    QVector3D rotationAxis;
-    qreal angularSpeed = 0;
-    QQuaternion rotation;
+    QMatrix4x4 projection_{};
 };

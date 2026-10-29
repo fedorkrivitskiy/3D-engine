@@ -1,16 +1,7 @@
 #pragma once
 
-#include <numbers>
-
 namespace Constants
 {
-constexpr float kFOV{45.0f};
-constexpr float kZNear{3.0f};
-constexpr float kZFar{7.0f};
-
-constexpr float kMaxCameraPitch = 89.f;
-constexpr float kMaxCameraPitchRadians = std::numbers::pi_v<float> * kMaxCameraPitch / 180.f;
-
 constexpr int kNumberTextures = 4;
 
 constexpr float a = 250.f;
