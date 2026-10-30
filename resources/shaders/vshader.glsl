@@ -1,18 +1,15 @@
-#ifdef GL_ES
+#version 330 core
 
-precision mediump int;
-precision mediump float;
-#endif
+layout(location = 0) in vec4 a_position;
+layout(location = 1) in vec2 a_texcoord;
+
+out vec2 v_texcoord;
 
 uniform mat4 mvp_matrix;
-
-attribute vec4 a_position;
-attribute vec2 a_texcoord;
-
-varying vec2 v_texcoord;
 
 void main()
 {
     gl_Position = mvp_matrix * a_position;
+
     v_texcoord = a_texcoord;
 }

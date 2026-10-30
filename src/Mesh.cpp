@@ -13,16 +13,16 @@
 
 #include "QOpenGLBufferWrapper.hpp"
 
-Mesh::Mesh() : indexBuf(QOpenGLBuffer::IndexBuffer)
+Mesh::Mesh() : indexBuf_(QOpenGLBuffer::IndexBuffer)
 {
-    indexBuf.create();
+    indexBuf_.create();
 }
 
 void Mesh::setVertices(const std::vector<std::vector<VertexData>> &vertices)
 {
-    arrayBuf.clear();
+    arrayBuf_.clear();
 
-    std::ranges::transform(vertices, std::back_inserter(arrayBuf), [](const std::vector<VertexData> &frameData) {
+    std::ranges::transform(vertices, std::back_inserter(arrayBuf_), [](const std::vector<VertexData> &frameData) {
         QOpenGLBufferWrapper buf(QOpenGLBuffer::VertexBuffer);
         buf.create();
         buf.bind();
@@ -35,18 +35,27 @@ void Mesh::setVertices(const std::vector<std::vector<VertexData>> &vertices)
 
 void Mesh::setIndices(const std::vector<Index> &indices)
 {
-    indexBuf.bind();
-    indexBuf.allocate(indices.data(), static_cast<int>(indices.size() * sizeof(Index)));
-    indexBuf.release();
+    indexBuf_.bind();
+    indexBuf_.allocate(indices.data(), static_cast<int>(indices.size() * sizeof(Index)));
+    indexBuf_.release();
 }
 
-void Mesh::setTexture(const QString &path)
+void Mesh::setColorTexture(const QString &path)
 {
-    texture = std::make_unique<QOpenGLTexture>(QImage(path).flipped());
+    colorTexture_ = std::make_unique<QOpenGLTexture>(QImage(path).flipped());
 
-    texture->setMinificationFilter(QOpenGLTexture::Nearest);
-    texture->setMagnificationFilter(QOpenGLTexture::Linear);
-    texture->setWrapMode(QOpenGLTexture::Repeat);
+    colorTexture_->setMinificationFilter(QOpenGLTexture::Nearest);
+    colorTexture_->setMagnificationFilter(QOpenGLTexture::Linear);
+    colorTexture_->setWrapMode(QOpenGLTexture::Repeat);
+}
+
+void Mesh::setNormalsTexture(const QString &path)
+{
+    normalTexture_ = std::make_unique<QOpenGLTexture>(QImage(path).flipped());
+
+    normalTexture_->setMinificationFilter(QOpenGLTexture::Nearest);
+    normalTexture_->setMagnificationFilter(QOpenGLTexture::Linear);
+    normalTexture_->setWrapMode(QOpenGLTexture::Repeat);
 }
 
 void Mesh::draw(QOpenGLShaderProgram *program, int frameIndex)
@@ -57,11 +66,14 @@ void Mesh::draw(QOpenGLShaderProgram *program, int frameIndex)
     program->enableAttributeArray(vertexLocation);
     program->enableAttributeArray(texcoordLocation);
 
-    arrayBuf[frameIndex].bind();
-    indexBuf.bind();
+    arrayBuf_[frameIndex].bind();
+    indexBuf_.bind();
 
-    texture->bind(0);
-    program->setUniformValue("texture", 0);
+    colorTexture_->bind(0);
+    program->setUniformValue("colorTexture", 0);
+
+    // normalTexture_->bind(1);
+    // program->setUniformValue("normalTexture", 1);
 
     quintptr offset = 0;
 
@@ -71,12 +83,12 @@ void Mesh::draw(QOpenGLShaderProgram *program, int frameIndex)
 
     program->setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
 
-    const int count = static_cast<int>(indexBuf.size() / sizeof(Index));
+    const int count = static_cast<int>(indexBuf_.size() / sizeof(Index));
     glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
 
     program->disableAttributeArray(vertexLocation);
     program->disableAttributeArray(texcoordLocation);
 
-    indexBuf.release();
-    arrayBuf[frameIndex].release();
+    indexBuf_.release();
+    arrayBuf_[frameIndex].release();
 }

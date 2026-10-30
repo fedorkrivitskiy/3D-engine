@@ -9,14 +9,50 @@
 #include <cmath>
 
 #include "Camera.hpp"
+#include "CameraController.hpp"
+#include "geometryengine.h"
+
+RenderWidget::RenderWidget(QWidget *parent) : QOpenGLWidget(parent)
+{
+    setFocusPolicy(Qt::StrongFocus);
+
+    camera_ = std::make_unique<Camera>();
+    cameraController_ = std::make_unique<CameraController>(camera_.get(), this);
+}
 
 RenderWidget::~RenderWidget()
 {
     makeCurrent();
 
-    delete geometries;
+    geometries_.reset();
+    program_.removeAllShaders();
 
     doneCurrent();
+}
+
+void RenderWidget::keyPressEvent(QKeyEvent *event)
+{
+    cameraController_->handleKeyPress(event);
+}
+
+void RenderWidget::keyReleaseEvent(QKeyEvent *event)
+{
+    cameraController_->handleKeyRelease(event);
+}
+
+void RenderWidget::mousePressEvent(QMouseEvent *event)
+{
+    cameraController_->handleMousePress(event);
+}
+
+void RenderWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+    cameraController_->handleMouseRelease(event);
+}
+
+void RenderWidget::mouseMoveEvent(QMouseEvent *event)
+{
+    cameraController_->handleMouseMove(event);
 }
 
 void RenderWidget::initializeGL()
@@ -27,46 +63,35 @@ void RenderWidget::initializeGL()
 
     initShaders();
 
-    geometries = new GeometryEngine();
+    geometries_.reset(new GeometryEngine());
 }
 
 void RenderWidget::initShaders()
 {
-    if (!program.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/vshader.glsl"))
+    if (!program_.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/vshader.glsl"))
         close();
 
-    if (!program.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/fshader.glsl"))
+    if (!program_.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/fshader.glsl"))
         close();
 
-    if (!program.link())
+    if (!program_.link())
         close();
 
-    if (!program.bind())
+    if (!program_.bind())
         close();
-}
-
-void RenderWidget::setCamera(Camera *camera)
-{
-    camera_ = camera;
-}
-
-void RenderWidget::setZNear(float zNear)
-{
-    zNear_ = zNear;
-
-    updateProjectionMatrix();
-}
-
-void RenderWidget::setZFar(float zFar)
-{
-    zFar_ = zFar;
-
-    updateProjectionMatrix();
 }
 
 void RenderWidget::setFov(float fov)
 {
     fov_ = fov;
+
+    updateProjectionMatrix();
+}
+
+void RenderWidget::setPlanes(float zNear, float zFar)
+{
+    zNear_ = zNear;
+    zFar_ = zFar;
 
     updateProjectionMatrix();
 }
@@ -87,13 +112,15 @@ void RenderWidget::updateProjectionMatrix()
 
 void RenderWidget::paintGL()
 {
+    cameraController_->update();
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glEnable(GL_DEPTH_TEST);
 
     glEnable(GL_CULL_FACE);
 
-    program.bind();
+    program_.bind();
 
     if (!camera_)
     {
@@ -103,9 +130,9 @@ void RenderWidget::paintGL()
     QMatrix4x4 cameraMatrix;
     cameraMatrix.lookAt(camera_->getEye(), camera_->getTarget(), camera_->getUp());
 
-    program.setUniformValue("mvp_matrix", projection_ * cameraMatrix);
+    program_.setUniformValue("mvp_matrix", projection_ * cameraMatrix);
 
-    geometries->drawModel(&program);
+    geometries_->drawModel(&program_);
 
-    geometries->updateModel();
+    geometries_->updateModel();
 }

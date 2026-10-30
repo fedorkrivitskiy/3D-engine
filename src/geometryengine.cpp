@@ -34,7 +34,23 @@ void GeometryEngine::initTextures()
         QString path =
             QString("%1/%2/%3").arg(Constants::kModelDirectoryPath, Constants::kTexturesDirectoryPath, filename);
 
-        model.getMesh(i++).setTexture(path);
+        model.getMesh(i).setColorTexture(path);
+        i++;
+    });
+
+    std::vector<QString> normalsFilenames = {
+        "hellknight_body_n.png",
+        "hellknight_head_n.png",
+        "hellknight_legs_n.png",
+        "hellknight_eyes_n.png",
+    };
+
+    std::ranges::for_each(normalsFilenames, [this, i = 0](const QString &filename) mutable {
+        QString path =
+            QString("%1/%2/%3").arg(Constants::kModelDirectoryPath, Constants::kTexturesDirectoryPath, filename);
+
+        model.getMesh(i).setNormalsTexture(path);
+        i++;
     });
 }
 

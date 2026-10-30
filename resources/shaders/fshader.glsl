@@ -1,15 +1,13 @@
-#ifdef GL_ES
+#version 330 core
 
-precision mediump int;
-precision mediump float;
-#endif
+in vec2 v_texcoord;
 
-uniform sampler2D texture;
+out vec4 color;
 
-varying vec2 v_texcoord;
+uniform sampler2D colorTexture;
+uniform sampler2D normalTexture;
 
 void main()
 {
-    gl_FragColor = texture2D(texture, v_texcoord);
+    color = texture2D(colorTexture, v_texcoord);
 }
-
