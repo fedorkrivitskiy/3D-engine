@@ -1,7 +1,7 @@
 #include "SettingsWidget.hpp"
 #include "ui_SettingsWidget.h"
 
-#include "Settings/SettingsModel.hpp"
+#include "Core/Settings/SettingsModel.hpp"
 
 SettingsWidget::SettingsWidget(QWidget *parent) : QWidget(parent), ui(new Ui::SettingsWidget)
 {

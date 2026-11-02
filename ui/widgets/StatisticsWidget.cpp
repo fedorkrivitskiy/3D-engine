@@ -4,8 +4,8 @@
 #include <format>
 #include <string>
 
-#include "Camera.hpp"
-#include "FPSCounter.hpp"
+#include "Camera/Camera.hpp"
+#include "Core/FPSCounter.hpp"
 
 namespace
 {

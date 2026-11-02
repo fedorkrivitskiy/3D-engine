@@ -14,8 +14,8 @@
 #include <string>
 #include <vector>
 
-#include "Model.hpp"
-#include "Types.hpp"
+#include "Core/Types.hpp"
+#include "Scene/Model.hpp"
 
 OBJModel ModelLoader::loadModel(const std::string &file_path)
 {

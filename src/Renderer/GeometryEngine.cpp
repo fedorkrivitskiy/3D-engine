@@ -1,4 +1,4 @@
-#include "geometryengine.h"
+#include "GeometryEngine.hpp"
 
 #include <QOpenGLShaderProgram>
 #include <QString>
@@ -8,9 +8,9 @@
 #include <utility>
 #include <vector>
 
-#include "Constants.hpp"
+#include "Core/Constants.hpp"
+#include "Core/Types.hpp"
 #include "Mesh.hpp"
-#include "Types.hpp"
 
 GeometryEngine::GeometryEngine()
 {

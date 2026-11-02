@@ -8,9 +8,9 @@
 
 #include <cmath>
 
-#include "Camera.hpp"
-#include "CameraController.hpp"
-#include "geometryengine.h"
+#include "Camera/Camera.hpp"
+#include "Camera/CameraController.hpp"
+#include "Renderer/GeometryEngine.hpp"
 
 RenderWidget::RenderWidget(QWidget *parent) : QOpenGLWidget(parent)
 {

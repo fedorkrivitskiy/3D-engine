@@ -4,9 +4,9 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLTexture>
 
-#include "Mesh.hpp"
-#include "Model.hpp"
-#include "Scene.hpp"
+#include "Renderer/Mesh.hpp"
+#include "Scene/Model.hpp"
+#include "Scene/Scene.hpp"
 
 class QOpenGLShaderProgram;
 

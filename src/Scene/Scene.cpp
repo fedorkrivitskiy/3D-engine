@@ -6,9 +6,9 @@
 #include <memory>
 #include <string>
 
-#include "Constants.hpp"
+#include "Core/Constants.hpp"
+#include "Core/Types.hpp"
 #include "ModelLoader.hpp"
-#include "Types.hpp"
 
 bool Scene::init()
 {

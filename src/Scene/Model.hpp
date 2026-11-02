@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Mesh.hpp"
-#include "Types.hpp"
+#include "Core/Types.hpp"
+#include "Renderer/Mesh.hpp"
 
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>

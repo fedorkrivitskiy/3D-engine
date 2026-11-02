@@ -4,8 +4,8 @@
 
 #include <vector>
 
+#include "Core/Types.hpp"
 #include "Model.hpp"
-#include "Types.hpp"
 
 class Scene final
 {

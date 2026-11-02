@@ -4,10 +4,10 @@
 #include <QKeyEvent>
 #include <QTimer>
 
-#include "FPSCounter.hpp"
+#include "Core/FPSCounter.hpp"
 
 #include "Core/Core.hpp"
-#include "Settings/SettingsModel.hpp"
+#include "Core/Settings/SettingsModel.hpp"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
