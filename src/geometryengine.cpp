@@ -72,6 +72,7 @@ void GeometryEngine::initModel()
         for (size_t j = 0; j < Constants::kFramesCount; ++j)
         {
             auto modelVertices = scene.getVertices();
+            auto normals = scene.getNormals();
             auto textureVertices = scene.getTextureVertices();
             auto modelFaces = scene.getFaces();
             scene.update();
@@ -96,9 +97,30 @@ void GeometryEngine::initModel()
                 const size_t vt1 = face[1][1];
                 const size_t vt2 = face[2][1];
 
-                vertices.push_back({modelVertices[v0], textureVertices[vt0]});
-                vertices.push_back({modelVertices[v1], textureVertices[vt1]});
-                vertices.push_back({modelVertices[v2], textureVertices[vt2]});
+                const size_t vn0 = face[0][2];
+                const size_t vn1 = face[1][2];
+                const size_t vn2 = face[2][2];
+
+                const auto &p0 = modelVertices[v0];
+                const auto &p1 = modelVertices[v1];
+                const auto &p2 = modelVertices[v2];
+
+                const auto &uv0 = textureVertices[vt0];
+                const auto &uv1 = textureVertices[vt1];
+                const auto &uv2 = textureVertices[vt2];
+
+                QVector3D edge1 = p1 - p0;
+                QVector3D edge2 = p2 - p0;
+                QVector2D deltaUV1 = uv1 - uv0;
+                QVector2D deltaUV2 = uv2 - uv0;
+
+                float r = 1.0f / (deltaUV1.x() * deltaUV2.y() - deltaUV1.y() * deltaUV2.x());
+                QVector3D tangent = (edge1 * deltaUV2.y() - edge2 * deltaUV1.y()) * r;
+                tangent.normalize();
+
+                vertices.push_back({p0, uv0, normals[vn0], tangent});
+                vertices.push_back({p1, uv1, normals[vn1], tangent});
+                vertices.push_back({p2, uv2, normals[vn2], tangent});
 
                 indices.push_back(currentIndex++);
                 indices.push_back(currentIndex++);

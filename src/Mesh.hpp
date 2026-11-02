@@ -15,6 +15,8 @@ struct VertexData
 {
     QVector3D position;
     QVector2D texCoord;
+    QVector3D normal;
+    QVector3D tangent;
 };
 
 using Index = GLuint;
@@ -33,8 +35,8 @@ class Mesh final
     void draw(QOpenGLShaderProgram *program, int frameIndex);
 
   private:
-    std::vector<QOpenGLBufferWrapper> arrayBuf_;
-    QOpenGLBufferWrapper indexBuf_;
+    std::vector<QOpenGLBufferWrapper> vertices_;
+    QOpenGLBufferWrapper indexes_;
 
     std::unique_ptr<QOpenGLTexture> colorTexture_;
     std::unique_ptr<QOpenGLTexture> normalTexture_;

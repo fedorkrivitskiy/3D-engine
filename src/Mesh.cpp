@@ -13,16 +13,16 @@
 
 #include "QOpenGLBufferWrapper.hpp"
 
-Mesh::Mesh() : indexBuf_(QOpenGLBuffer::IndexBuffer)
+Mesh::Mesh() : indexes_(QOpenGLBuffer::IndexBuffer)
 {
-    indexBuf_.create();
+    indexes_.create();
 }
 
 void Mesh::setVertices(const std::vector<std::vector<VertexData>> &vertices)
 {
-    arrayBuf_.clear();
+    vertices_.clear();
 
-    std::ranges::transform(vertices, std::back_inserter(arrayBuf_), [](const std::vector<VertexData> &frameData) {
+    std::ranges::transform(vertices, std::back_inserter(vertices_), [](const std::vector<VertexData> &frameData) {
         QOpenGLBufferWrapper buf(QOpenGLBuffer::VertexBuffer);
         buf.create();
         buf.bind();
@@ -35,9 +35,9 @@ void Mesh::setVertices(const std::vector<std::vector<VertexData>> &vertices)
 
 void Mesh::setIndices(const std::vector<Index> &indices)
 {
-    indexBuf_.bind();
-    indexBuf_.allocate(indices.data(), static_cast<int>(indices.size() * sizeof(Index)));
-    indexBuf_.release();
+    indexes_.bind();
+    indexes_.allocate(indices.data(), static_cast<int>(indices.size() * sizeof(Index)));
+    indexes_.release();
 }
 
 void Mesh::setColorTexture(const QString &path)
@@ -62,18 +62,19 @@ void Mesh::draw(QOpenGLShaderProgram *program, int frameIndex)
 {
     const int vertexLocation = program->attributeLocation("a_position");
     const int texcoordLocation = program->attributeLocation("a_texcoord");
+    const int normalLocation = program->attributeLocation("a_normal");
+    const int tangentLocation = program->attributeLocation("a_tangent");
 
     program->enableAttributeArray(vertexLocation);
     program->enableAttributeArray(texcoordLocation);
+    program->enableAttributeArray(normalLocation);
+    program->enableAttributeArray(tangentLocation);
 
-    arrayBuf_[frameIndex].bind();
-    indexBuf_.bind();
+    vertices_[frameIndex].bind();
+    indexes_.bind();
 
     colorTexture_->bind(0);
     program->setUniformValue("colorTexture", 0);
-
-    // normalTexture_->bind(1);
-    // program->setUniformValue("normalTexture", 1);
 
     quintptr offset = 0;
 
@@ -83,12 +84,22 @@ void Mesh::draw(QOpenGLShaderProgram *program, int frameIndex)
 
     program->setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
 
-    const int count = static_cast<int>(indexBuf_.size() / sizeof(Index));
+    offset += sizeof(QVector2D);
+
+    program->setAttributeBuffer(normalLocation, GL_FLOAT, offset, 3, sizeof(VertexData));
+
+    offset += sizeof(QVector3D);
+
+    program->setAttributeBuffer(tangentLocation, GL_FLOAT, offset, 3, sizeof(VertexData));
+
+    const int count = static_cast<int>(indexes_.size() / sizeof(Index));
     glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
 
     program->disableAttributeArray(vertexLocation);
     program->disableAttributeArray(texcoordLocation);
+    program->disableAttributeArray(normalLocation);
+    program->disableAttributeArray(tangentLocation);
 
-    indexBuf_.release();
-    arrayBuf_[frameIndex].release();
+    indexes_.release();
+    vertices_[frameIndex].release();
 }
