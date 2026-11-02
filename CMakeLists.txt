@@ -18,9 +18,6 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets OpenGLWidgets)
 # -----------------------------------------------------------------------------
 # Conan2 Packages
 # -----------------------------------------------------------------------------
-find_package(nlohmann_json REQUIRED)
-find_package(glm REQUIRED)
-find_package(glad REQUIRED)
 find_package(glfw3 REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(tinyobjloader REQUIRED)
@@ -82,11 +79,7 @@ target_link_libraries(
 
 target_link_libraries(
     ${PROJECT_NAME} PRIVATE
-    nlohmann_json::nlohmann_json
-    glm::glm
     opengl::opengl
-    glfw
-    glad::glad
     tinyobjloader::tinyobjloader
 )
 
