@@ -7,15 +7,13 @@ layout(location = 3) in vec3 a_tangent;
 
 out vec2 v_texcoord;
 out vec3 v_normal;
-out vec3 v_light;
 out vec3 v_tangent;
 out vec3 v_bitangent;
+out vec3 v_worldPos;
 
 uniform mat4 model_matrix;
 uniform mat4 view_matrix;
 uniform mat4 projection_matrix;
-
-uniform vec3 v_lightPos;
 
 void main()
 {
@@ -23,6 +21,7 @@ void main()
     gl_Position = projection_matrix * view_matrix * worldPos;
 
     v_texcoord = a_texcoord;
+    v_worldPos = worldPos.xyz;
 
     mat3 normalMatrix = transpose(inverse(mat3(model_matrix)));
 
@@ -35,6 +34,4 @@ void main()
     v_tangent = T;
     v_bitangent = B;
     v_normal = N;
-
-    v_light = v_lightPos - vec3(worldPos);
 }

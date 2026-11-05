@@ -13,6 +13,20 @@
 
 #include "QOpenGLBufferWrapper.hpp"
 
+namespace
+{
+std::unique_ptr<QOpenGLTexture> loadTextureFromFile(const QString &path)
+{
+    std::unique_ptr<QOpenGLTexture> texture = std::make_unique<QOpenGLTexture>(QImage(path).flipped());
+
+    texture->setMinificationFilter(QOpenGLTexture::Nearest);
+    texture->setMagnificationFilter(QOpenGLTexture::Linear);
+    texture->setWrapMode(QOpenGLTexture::Repeat);
+
+    return texture;
+}
+} // namespace
+
 Mesh::Mesh() : indexes_(QOpenGLBuffer::IndexBuffer)
 {
     indexes_.create();
@@ -42,20 +56,22 @@ void Mesh::setIndices(const std::vector<Index> &indices)
 
 void Mesh::setColorTexture(const QString &path)
 {
-    colorTexture_ = std::make_unique<QOpenGLTexture>(QImage(path).flipped());
-
-    colorTexture_->setMinificationFilter(QOpenGLTexture::Nearest);
-    colorTexture_->setMagnificationFilter(QOpenGLTexture::Linear);
-    colorTexture_->setWrapMode(QOpenGLTexture::Repeat);
+    colorTexture_ = loadTextureFromFile(path);
 }
 
 void Mesh::setNormalsTexture(const QString &path)
 {
-    normalTexture_ = std::make_unique<QOpenGLTexture>(QImage(path).flipped());
+    normalTexture_ = loadTextureFromFile(path);
+}
 
-    normalTexture_->setMinificationFilter(QOpenGLTexture::Nearest);
-    normalTexture_->setMagnificationFilter(QOpenGLTexture::Linear);
-    normalTexture_->setWrapMode(QOpenGLTexture::Repeat);
+void Mesh::setGlossinessTexture(const QString &path)
+{
+    glossinessTexture_ = loadTextureFromFile(path);
+}
+
+void Mesh::setSpecularTexture(const QString &path)
+{
+    specularTexture_ = loadTextureFromFile(path);
 }
 
 void Mesh::draw(QOpenGLShaderProgram *program, int frameIndex)
@@ -78,6 +94,12 @@ void Mesh::draw(QOpenGLShaderProgram *program, int frameIndex)
 
     normalTexture_->bind(1);
     program->setUniformValue("normalTexture", 1);
+
+    glossinessTexture_->bind(2);
+    program->setUniformValue("glossinessTexture", 2);
+
+    specularTexture_->bind(3);
+    program->setUniformValue("specularTexture", 3);
 
     quintptr offset = 0;
 

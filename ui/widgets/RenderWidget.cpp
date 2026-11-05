@@ -127,13 +127,24 @@ void RenderWidget::paintGL()
         return;
     }
 
+    const QVector4D lightColor = QVector4D{1.0, 1.0, 1.0, 1.0};
+    const float ambientStrength = 0.15f;  // TODO: fix
+    const float diffuseStrength = 1.0f;   // TODO: fix
+    const float specularStrength = 0.15f; // TODO: fix
+
     QMatrix4x4 modelMatrix;
     modelMatrix.setToIdentity();
 
     QMatrix4x4 viewMatrix;
     viewMatrix.lookAt(camera_->getEye(), camera_->getTarget(), camera_->getUp());
 
-    program_.setUniformValue("v_lightPos", camera_->getEye());
+    program_.setUniformValue("ambientStrength", ambientStrength);
+    program_.setUniformValue("diffuseStrength", diffuseStrength);
+    program_.setUniformValue("specularStrength", specularStrength);
+
+    program_.setUniformValue("lightPos", camera_->getEye());
+    program_.setUniformValue("viewPos", camera_->getEye());
+    program_.setUniformValue("lightColor", lightColor);
 
     program_.setUniformValue("model_matrix", modelMatrix);
     program_.setUniformValue("view_matrix", viewMatrix);

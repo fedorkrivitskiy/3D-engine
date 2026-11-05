@@ -31,6 +31,8 @@ class Mesh final
 
     void setColorTexture(const QString &path);
     void setNormalsTexture(const QString &path);
+    void setGlossinessTexture(const QString &path);
+    void setSpecularTexture(const QString &path);
 
     void draw(QOpenGLShaderProgram *program, int frameIndex);
 
@@ -40,4 +42,6 @@ class Mesh final
 
     std::unique_ptr<QOpenGLTexture> colorTexture_;
     std::unique_ptr<QOpenGLTexture> normalTexture_;
+    std::unique_ptr<QOpenGLTexture> glossinessTexture_;
+    std::unique_ptr<QOpenGLTexture> specularTexture_;
 };

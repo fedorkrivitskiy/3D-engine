@@ -52,6 +52,36 @@ void GeometryEngine::initTextures()
         model.getMesh(i).setNormalsTexture(path);
         i++;
     });
+
+    std::vector<QString> glossinessFilenames = {
+        "hellknight_body_g.png",
+        "hellknight_head_g.png",
+        "hellknight_legs_g.png",
+        "hellknight_eyes_e.png",
+    };
+
+    std::ranges::for_each(glossinessFilenames, [this, i = 0](const QString &filename) mutable {
+        QString path =
+            QString("%1/%2/%3").arg(Constants::kModelDirectoryPath, Constants::kTexturesDirectoryPath, filename);
+
+        model.getMesh(i).setGlossinessTexture(path);
+        i++;
+    });
+
+    std::vector<QString> specularFilenames = {
+        "hellknight_body_s.png",
+        "hellknight_head_s.png",
+        "hellknight_legs_s.png",
+        "hellknight_eyes_s.png",
+    };
+
+    std::ranges::for_each(specularFilenames, [this, i = 0](const QString &filename) mutable {
+        QString path =
+            QString("%1/%2/%3").arg(Constants::kModelDirectoryPath, Constants::kTexturesDirectoryPath, filename);
+
+        model.getMesh(i).setSpecularTexture(path);
+        i++;
+    });
 }
 
 void GeometryEngine::initModel()
