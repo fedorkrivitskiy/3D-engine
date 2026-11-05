@@ -76,6 +76,9 @@ void Mesh::draw(QOpenGLShaderProgram *program, int frameIndex)
     colorTexture_->bind(0);
     program->setUniformValue("colorTexture", 0);
 
+    normalTexture_->bind(1);
+    program->setUniformValue("normalTexture", 1);
+
     quintptr offset = 0;
 
     program->setAttributeBuffer(vertexLocation, GL_FLOAT, offset, 3, sizeof(VertexData));

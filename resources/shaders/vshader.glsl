@@ -1,6 +1,6 @@
 #version 330 core
 
-layout(location = 0) in vec4 a_position;
+layout(location = 0) in vec3 a_position;
 layout(location = 1) in vec2 a_texcoord;
 layout(location = 2) in vec3 a_normal;
 layout(location = 3) in vec3 a_tangent;
@@ -8,14 +8,33 @@ layout(location = 3) in vec3 a_tangent;
 out vec2 v_texcoord;
 out vec3 v_normal;
 out vec3 v_light;
+out vec3 v_tangent;
+out vec3 v_bitangent;
 
-uniform mat4 mvp_matrix;
+uniform mat4 model_matrix;
+uniform mat4 view_matrix;
+uniform mat4 projection_matrix;
+
+uniform vec3 v_lightPos;
 
 void main()
 {
-    gl_Position = mvp_matrix * a_position;
+    vec4 worldPos = model_matrix * vec4(a_position, 1.0);
+    gl_Position = projection_matrix * view_matrix * worldPos;
 
     v_texcoord = a_texcoord;
-    v_normal = normalize(a_normal);
-    v_light = normalize(vec3(1.0, 0.0, 0.0));
+
+    mat3 normalMatrix = transpose(inverse(mat3(model_matrix)));
+
+    vec3 T = normalize(normalMatrix * a_tangent);
+    vec3 N = normalize(normalMatrix * a_normal);
+
+    T = normalize(T - dot(T, N) * N);
+    vec3 B = cross(N, T);
+
+    v_tangent = T;
+    v_bitangent = B;
+    v_normal = N;
+
+    v_light = v_lightPos - vec3(worldPos);
 }

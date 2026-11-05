@@ -127,10 +127,17 @@ void RenderWidget::paintGL()
         return;
     }
 
-    QMatrix4x4 cameraMatrix;
-    cameraMatrix.lookAt(camera_->getEye(), camera_->getTarget(), camera_->getUp());
+    QMatrix4x4 modelMatrix;
+    modelMatrix.setToIdentity();
 
-    program_.setUniformValue("mvp_matrix", projection_ * cameraMatrix);
+    QMatrix4x4 viewMatrix;
+    viewMatrix.lookAt(camera_->getEye(), camera_->getTarget(), camera_->getUp());
+
+    program_.setUniformValue("v_lightPos", camera_->getEye());
+
+    program_.setUniformValue("model_matrix", modelMatrix);
+    program_.setUniformValue("view_matrix", viewMatrix);
+    program_.setUniformValue("projection_matrix", projection_);
 
     geometries_->drawModel(&program_);
 
