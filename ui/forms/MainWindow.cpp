@@ -73,20 +73,5 @@ void MainWindow::initStatisticsWidget()
 
 void MainWindow::initRenderWidget()
 {
-    SettingsModel *settingsModel = Core::get().getSettingsModel();
-
-    ui->renderWidget->setFov(settingsModel->getFov());
-    ui->renderWidget->setPlanes(settingsModel->getZNear(), settingsModel->getZFar());
-
-    connect(settingsModel, &SettingsModel::fovChanged, this, [this](float fov) { ui->renderWidget->setFov(fov); });
-
-    connect(settingsModel, &SettingsModel::zNearChanged, this, [this](float zNear) {
-        SettingsModel *settingsModel = Core::get().getSettingsModel();
-        ui->renderWidget->setPlanes(settingsModel->getZNear(), settingsModel->getZFar());
-    });
-
-    connect(settingsModel, &SettingsModel::zFarChanged, this, [this](float zFar) {
-        SettingsModel *settingsModel = Core::get().getSettingsModel();
-        ui->renderWidget->setPlanes(settingsModel->getZNear(), settingsModel->getZFar());
-    });
+    //
 }

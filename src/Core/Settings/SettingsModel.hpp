@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QColor>
 #include <QObject>
 #include <QString>
 
@@ -13,6 +14,14 @@ struct CameraSettings
 struct ModelSettings
 {
     QString modelPath{};
+};
+
+struct SceneSettings
+{
+    QColor lightColor{};
+    float kAmbient{};
+    float kDiffuse{};
+    float kSpecular{};
 };
 
 class SettingsModel final : public QObject
@@ -38,6 +47,18 @@ class SettingsModel final : public QObject
     void setModelPath(const QString &path);
     QString getModelPath() const;
 
+    void setLightColor(const QColor &color);
+    QColor getLightColor() const;
+
+    void setKAmbient(float kAmbient);
+    float getKAmbient() const;
+
+    void setKDiffuse(float kDiffuse);
+    float getKDiffuse() const;
+
+    void setKSpecular(float kSpecular);
+    float getKSpecular() const;
+
   signals:
     void fovChanged(float fov);
     void zNearChanged(float zNear);
@@ -45,7 +66,13 @@ class SettingsModel final : public QObject
 
     void modelPathChanged(const QString &modelPath);
 
+    void lightColorChanged(const QColor &lightColor);
+    void kAmbientChanged(float kAmbient);
+    void diffuseChanged(float kDiffuse);
+    void specularChanged(float kSpecular);
+
   private:
     CameraSettings cameraSettings_{};
     ModelSettings modelSettings_{};
+    SceneSettings sceneSettings_{};
 };

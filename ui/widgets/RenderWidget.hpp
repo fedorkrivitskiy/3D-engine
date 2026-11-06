@@ -18,15 +18,11 @@ class RenderWidget : public QOpenGLWidget, protected QOpenGLFunctions
     explicit RenderWidget(QWidget *parent = nullptr);
     ~RenderWidget() override;
 
-    void setFov(float fov);
-    void setPlanes(float zNear, float zFar);
-
   signals:
     void frameRendered(float frameTimeMs);
 
   protected:
     void initializeGL() override;
-    void resizeGL(int w, int h) override;
     void paintGL() override;
 
     void keyPressEvent(QKeyEvent *event) override;
@@ -36,7 +32,7 @@ class RenderWidget : public QOpenGLWidget, protected QOpenGLFunctions
     void mouseMoveEvent(QMouseEvent *event) override;
 
   private:
-    void updateProjectionMatrix();
+    QMatrix4x4 getProjectionMatrix();
     void initShaders();
 
     std::unique_ptr<Camera> camera_;
@@ -44,10 +40,4 @@ class RenderWidget : public QOpenGLWidget, protected QOpenGLFunctions
     std::unique_ptr<GeometryEngine> geometries_;
 
     QOpenGLShaderProgram program_;
-    QMatrix4x4 projection_;
-
-    float fov_{60.0f};
-    float zNear_{0.1f};
-    float zFar_{100.0f};
-    float aspectRatio_{1.0f};
 };

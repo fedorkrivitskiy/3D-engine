@@ -29,6 +29,11 @@ void SettingsModel::load()
     cameraSettings_.zNear = settings.value("camera/zNear", Defaults::Camera::kZNear).toFloat();
 
     modelSettings_.modelPath = settings.value("model/modelPath", Defaults::Model::kModelPath).toString();
+
+    sceneSettings_.lightColor = settings.value("scene/lightColor", Defaults::Scene::kLightColor).value<QColor>();
+    sceneSettings_.kAmbient = settings.value("scene/kAmbient", Defaults::Scene::kAmbient).toFloat();
+    sceneSettings_.kDiffuse = settings.value("scene/kDiffuse", Defaults::Scene::kDiffuse).toFloat();
+    sceneSettings_.kSpecular = settings.value("scene/kSpecular", Defaults::Scene::kSpecular).toFloat();
 }
 
 void SettingsModel::save()
@@ -40,6 +45,11 @@ void SettingsModel::save()
     settings.setValue("camera/zNear", cameraSettings_.zNear);
 
     settings.setValue("model/modelPath", modelSettings_.modelPath);
+
+    settings.setValue("scene/lightColor", sceneSettings_.lightColor);
+    settings.setValue("scene/kAmbient", sceneSettings_.kAmbient);
+    settings.setValue("scene/kDiffuse", sceneSettings_.kDiffuse);
+    settings.setValue("scene/kSpecular", sceneSettings_.kSpecular);
 }
 
 void SettingsModel::setFov(float fov)
@@ -92,6 +102,11 @@ float SettingsModel::getZFar() const
 
 void SettingsModel::setModelPath(const QString &modelPath)
 {
+    if (modelSettings_.modelPath == modelPath)
+    {
+        return;
+    }
+
     modelSettings_.modelPath = modelPath;
     emit modelPathChanged(modelPath);
 }
@@ -99,4 +114,68 @@ void SettingsModel::setModelPath(const QString &modelPath)
 QString SettingsModel::getModelPath() const
 {
     return modelSettings_.modelPath;
+}
+
+void SettingsModel::setLightColor(const QColor &color)
+{
+    if (sceneSettings_.lightColor == color)
+    {
+        return;
+    }
+
+    sceneSettings_.lightColor = color;
+    emit lightColorChanged(color);
+}
+
+QColor SettingsModel::getLightColor() const
+{
+    return sceneSettings_.lightColor;
+}
+
+void SettingsModel::setKAmbient(float kAmbient)
+{
+    if (qFuzzyCompare(kAmbient, sceneSettings_.kAmbient))
+    {
+        return;
+    }
+
+    sceneSettings_.kAmbient = kAmbient;
+    emit kAmbientChanged(kAmbient);
+}
+
+float SettingsModel::getKAmbient() const
+{
+    return sceneSettings_.kAmbient;
+}
+
+void SettingsModel::setKDiffuse(float kDiffuse)
+{
+    if (qFuzzyCompare(kDiffuse, sceneSettings_.kDiffuse))
+    {
+        return;
+    }
+
+    sceneSettings_.kDiffuse = kDiffuse;
+    emit diffuseChanged(kDiffuse);
+}
+
+float SettingsModel::getKDiffuse() const
+{
+    return sceneSettings_.kDiffuse;
+}
+
+void SettingsModel::setKSpecular(float kSpecular)
+{
+    if (qFuzzyCompare(kSpecular, sceneSettings_.kSpecular))
+    {
+        return;
+    }
+
+    sceneSettings_.kSpecular = kSpecular;
+    emit specularChanged(kSpecular);
+}
+
+float SettingsModel::getKSpecular() const
+{
+    return sceneSettings_.kSpecular;
 }

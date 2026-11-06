@@ -10,6 +10,8 @@
 
 #include "Camera/Camera.hpp"
 #include "Camera/CameraController.hpp"
+#include "Core/Core.hpp"
+#include "Core/Settings/SettingsModel.hpp"
 #include "Renderer/GeometryEngine.hpp"
 
 RenderWidget::RenderWidget(QWidget *parent) : QOpenGLWidget(parent)
@@ -81,33 +83,19 @@ void RenderWidget::initShaders()
         close();
 }
 
-void RenderWidget::setFov(float fov)
+QMatrix4x4 RenderWidget::getProjectionMatrix()
 {
-    fov_ = fov;
+    QMatrix4x4 projection;
+    projection.setToIdentity();
 
-    updateProjectionMatrix();
-}
+    SettingsModel *settingsModel = Core::get().getSettingsModel();
 
-void RenderWidget::setPlanes(float zNear, float zFar)
-{
-    zNear_ = zNear;
-    zFar_ = zFar;
+    auto [w, h] = size();
+    float aspectRatio = static_cast<float>(w) / static_cast<float>(h > 0 ? h : 1);
 
-    updateProjectionMatrix();
-}
+    projection.perspective(settingsModel->getFov(), aspectRatio, settingsModel->getZNear(), settingsModel->getZFar());
 
-void RenderWidget::resizeGL(int w, int h)
-{
-    aspectRatio_ = float(w) / float(h ? h : 1);
-
-    updateProjectionMatrix();
-}
-
-void RenderWidget::updateProjectionMatrix()
-{
-    projection_.setToIdentity();
-
-    projection_.perspective(fov_, aspectRatio_, zNear_, zFar_);
+    return projection;
 }
 
 void RenderWidget::paintGL()
@@ -127,28 +115,30 @@ void RenderWidget::paintGL()
         return;
     }
 
-    const QVector4D lightColor = QVector4D{1.0, 1.0, 1.0, 1.0};
-    const float ambientStrength = 0.15f;  // TODO: fix
-    const float diffuseStrength = 1.0f;   // TODO: fix
-    const float specularStrength = 0.15f; // TODO: fix
-
     QMatrix4x4 modelMatrix;
     modelMatrix.setToIdentity();
 
     QMatrix4x4 viewMatrix;
     viewMatrix.lookAt(camera_->getEye(), camera_->getTarget(), camera_->getUp());
 
-    program_.setUniformValue("ambientStrength", ambientStrength);
-    program_.setUniformValue("diffuseStrength", diffuseStrength);
-    program_.setUniformValue("specularStrength", specularStrength);
+    QMatrix4x4 projection = getProjectionMatrix();
+
+    SettingsModel *settingsModel = Core::get().getSettingsModel();
+
+    program_.setUniformValue("ambientStrength", settingsModel->getKAmbient());
+    program_.setUniformValue("diffuseStrength", settingsModel->getKDiffuse());
+    program_.setUniformValue("specularStrength", settingsModel->getKSpecular());
 
     program_.setUniformValue("lightPos", camera_->getEye());
     program_.setUniformValue("viewPos", camera_->getEye());
-    program_.setUniformValue("lightColor", lightColor);
+
+    QColor c = settingsModel->getLightColor();
+    QVector4D lightColorVec(c.redF(), c.greenF(), c.blueF(), c.alphaF());
+    program_.setUniformValue("lightColor", lightColorVec);
 
     program_.setUniformValue("model_matrix", modelMatrix);
     program_.setUniformValue("view_matrix", viewMatrix);
-    program_.setUniformValue("projection_matrix", projection_);
+    program_.setUniformValue("projection_matrix", projection);
 
     geometries_->drawModel(&program_);
 
