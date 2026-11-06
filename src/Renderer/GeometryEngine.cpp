@@ -14,7 +14,7 @@
 
 GeometryEngine::GeometryEngine()
 {
-    scene.init();
+    scene_.init();
     initializeOpenGLFunctions();
 
     initModel();
@@ -34,7 +34,7 @@ void GeometryEngine::initTextures()
         QString path =
             QString("%1/%2/%3").arg(Constants::kModelDirectoryPath, Constants::kTexturesDirectoryPath, filename);
 
-        model.getMesh(i).setColorTexture(path);
+        model_.getMesh(i).setColorTexture(path);
         i++;
     });
 
@@ -49,7 +49,7 @@ void GeometryEngine::initTextures()
         QString path =
             QString("%1/%2/%3").arg(Constants::kModelDirectoryPath, Constants::kTexturesDirectoryPath, filename);
 
-        model.getMesh(i).setNormalsTexture(path);
+        model_.getMesh(i).setNormalsTexture(path);
         i++;
     });
 
@@ -64,7 +64,7 @@ void GeometryEngine::initTextures()
         QString path =
             QString("%1/%2/%3").arg(Constants::kModelDirectoryPath, Constants::kTexturesDirectoryPath, filename);
 
-        model.getMesh(i).setGlossinessTexture(path);
+        model_.getMesh(i).setGlossinessTexture(path);
         i++;
     });
 
@@ -79,14 +79,14 @@ void GeometryEngine::initTextures()
         QString path =
             QString("%1/%2/%3").arg(Constants::kModelDirectoryPath, Constants::kTexturesDirectoryPath, filename);
 
-        model.getMesh(i).setSpecularTexture(path);
+        model_.getMesh(i).setSpecularTexture(path);
         i++;
     });
 }
 
 void GeometryEngine::initModel()
 {
-    const auto &modelMtls = scene.getMtls();
+    const auto &modelMtls = scene_.getMtls();
 
     size_t offset = 0;
 
@@ -101,11 +101,11 @@ void GeometryEngine::initModel()
 
         for (size_t j = 0; j < Constants::kFramesCount; ++j)
         {
-            auto modelVertices = scene.getVertices();
-            auto normals = scene.getNormals();
-            auto textureVertices = scene.getTextureVertices();
-            auto modelFaces = scene.getFaces();
-            scene.update();
+            auto modelVertices = scene_.getVertices();
+            auto normals = scene_.getNormals();
+            auto textureVertices = scene_.getTextureVertices();
+            auto modelFaces = scene_.getFaces();
+            scene_.update();
 
             std::vector<VertexData> vertices;
             vertices.reserve(currentSize * 3);
@@ -165,7 +165,7 @@ void GeometryEngine::initModel()
         mesh.setVertices(meshVertices);
         mesh.setIndices(meshIndicies);
 
-        model.addMesh(std::move(mesh));
+        model_.addMesh(std::move(mesh));
 
         offset += currentSize;
     }
@@ -173,10 +173,10 @@ void GeometryEngine::initModel()
 
 void GeometryEngine::drawModel(QOpenGLShaderProgram *program)
 {
-    model.draw(program, index);
+    model_.draw(program, index_);
 }
 
 void GeometryEngine::updateModel()
 {
-    index = (index + 1) % Constants::kFramesCount;
+    index_ = (index_ + 1) % Constants::kFramesCount;
 }

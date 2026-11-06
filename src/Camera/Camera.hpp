@@ -2,12 +2,10 @@
 
 #include <QVector3D>
 
-class Camera
+class Camera final
 {
   public:
     Camera();
-
-    virtual ~Camera() = default;
 
     void move(const QVector3D &direction);
 
@@ -15,13 +13,13 @@ class Camera
 
     void setScale(float scale);
 
-    QVector3D getEye() const;
+    [[nodiscard]] QVector3D getEye() const;
 
-    QVector3D getTarget() const;
+    [[nodiscard]] QVector3D getTarget() const;
 
-    QVector3D getUp() const;
+    [[nodiscard]] QVector3D getUp() const;
 
-    float getScale() const;
+    [[nodiscard]] float getScale() const;
 
   private:
     void updateForward();

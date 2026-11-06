@@ -25,10 +25,10 @@ class CameraController : public QObject
     void update();
 
   private:
-    void updateMovement(float dt);
-    void updateRotation(float dt);
+    void updateMovement(float deltaTime);
+    void updateRotation(float deltaTime);
 
-    QVector3D computeInputDirection() const;
+    [[nodiscard]] QVector3D computeInputDirection() const;
 
   private:
     Camera *camera_{nullptr};
@@ -41,9 +41,9 @@ class CameraController : public QObject
     QPointF lastMousePos_;
     QPointF pendingMouseDelta_{0.0f, 0.0f};
 
-    // Настройки
-    float movementSpeed_{10.0f};     // Юнитов в секунду
-    float acceleration_{15.0f};      // Коэффициент плавности хода
-    float mouseSensitivity_{0.002f}; // Чувствительность (в радианах на пиксель)
-    float rotationSmoothing_{25.0f}; // Коэффициент сглаживания мыши
+    // TODO: move to settings
+    float movementSpeed_{10.0f};
+    float acceleration_{15.0f};
+    float mouseSensitivity_{0.002f};
+    float rotationSmoothing_{25.0f};
 };

@@ -18,7 +18,7 @@ constexpr auto kModelPath = "";
 
 namespace Scene
 {
-inline const QColor kLightColor = QColor::fromRgbF(1.0f, 1.0f, 1.0f, 1.0f);
+constexpr QColor kLightColor = QColor(255.f, 255.f, 255.f, 255.f);
 constexpr float kAmbient = 0.15f;
 constexpr float kDiffuse = 1.0f;
 constexpr float kSpecular = 0.15f;

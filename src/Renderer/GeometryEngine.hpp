@@ -12,6 +12,8 @@ class QOpenGLShaderProgram;
 
 class GeometryEngine final : protected QOpenGLFunctions
 {
+    Q_DISABLE_COPY_MOVE(GeometryEngine)
+
   public:
     GeometryEngine();
     virtual ~GeometryEngine() = default;
@@ -25,7 +27,7 @@ class GeometryEngine final : protected QOpenGLFunctions
     void initTextures();
 
   private:
-    Scene scene{};
-    Model model{};
-    int index = 0;
+    Scene scene_;
+    Model model_;
+    int index_{};
 };

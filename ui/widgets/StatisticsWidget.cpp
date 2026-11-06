@@ -9,39 +9,20 @@
 
 namespace
 {
-
 std::string toString(const QVector3D &vec)
 {
     return std::format("[{:.2f}, {:.2f}, {:.2f}]", vec.x(), vec.y(), vec.z());
 }
-
-std::string toString(const StatsWidget::CameraStats &stats)
-{
-    return std::format("Eye: {}\n"
-                       "Target: {}\n"
-                       "Up: {}\n"
-                       "Scale: {:.2f}",
-                       toString(stats.eye), toString(stats.target), toString(stats.up), stats.scale);
-}
-
-std::string toString(const StatsWidget::RendererStats &stats)
-{
-    return std::format("FPS: {:.0f} (Avg: {:.0f}, Min: {:.0f}, Max: {:.0f})\n"
-                       "Frame Time: {:.2f}ms (Avg: {:.2f}ms)\n"
-                       "Total Frames: {}",
-                       stats.fps, stats.averageFps, stats.minFps, stats.maxFps, stats.frameTime, stats.averageFrameTime,
-                       stats.totalFrames);
-}
 } // namespace
 
-StatsWidget::StatsWidget(QWidget *parent) : QWidget(parent), ui(new Ui::StatsWidget)
+StatsWidget::StatsWidget(QWidget *parent) : QWidget(parent), ui_(new Ui::StatsWidget)
 {
-    ui->setupUi(this);
+    ui_->setupUi(this);
 }
 
 StatsWidget::~StatsWidget()
 {
-    delete ui;
+    delete ui_;
 }
 
 void StatsWidget::setCamera(Camera *camera)
@@ -56,16 +37,16 @@ void StatsWidget::setFPSCounter(FPSCounter *counter)
 
 void StatsWidget::updateStats()
 {
-    std::string cameraStatsText = toString(getCameraStats());
-    std::string rendererStatsText = toString(getRendererStats());
+    std::string cameraStatsText = getCameraStats().toString();
+    std::string rendererStatsText = getRendererStats().toString();
 
-    ui->rendererStatsLabel->setText(QString::fromStdString(rendererStatsText));
-    ui->cameraStatsLabel->setText(QString::fromStdString(cameraStatsText));
+    ui_->rendererStatsLabel->setText(QString::fromStdString(rendererStatsText));
+    ui_->cameraStatsLabel->setText(QString::fromStdString(cameraStatsText));
 }
 
 StatsWidget::CameraStats StatsWidget::getCameraStats()
 {
-    if (!camera_)
+    if (camera_ == nullptr)
     {
         return {};
     }
@@ -76,7 +57,7 @@ StatsWidget::CameraStats StatsWidget::getCameraStats()
 
 StatsWidget::RendererStats StatsWidget::getRendererStats()
 {
-    if (!counter_)
+    if (counter_ == nullptr)
     {
         return {};
     }
@@ -90,4 +71,21 @@ StatsWidget::RendererStats StatsWidget::getRendererStats()
         .minFps = counter_->getMinFps(),
         .totalFrames = counter_->getTotalFrames(),
     };
+}
+
+std::string StatsWidget::CameraStats::toString() const
+{
+    return std::format("Eye: {}\n"
+                       "Target: {}\n"
+                       "Up: {}\n"
+                       "Scale: {:.2f}",
+                       ::toString(eye), ::toString(target), ::toString(up), scale);
+}
+
+std::string StatsWidget::RendererStats::toString() const
+{
+    return std::format("FPS: {:.0f} (Avg: {:.0f}, Min: {:.0f}, Max: {:.0f})\n"
+                       "Frame Time: {:.2f}ms (Avg: {:.2f}ms)\n"
+                       "Total Frames: {}",
+                       fps, averageFps, minFps, maxFps, frameTime, averageFrameTime, totalFrames);
 }

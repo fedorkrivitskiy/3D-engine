@@ -28,6 +28,8 @@ class SettingsModel final : public QObject
 {
     Q_OBJECT
 
+    Q_DISABLE_COPY_MOVE(SettingsModel)
+
   public:
     explicit SettingsModel(QObject *parent = nullptr);
     ~SettingsModel() override;
@@ -36,28 +38,28 @@ class SettingsModel final : public QObject
     void save();
 
     void setFov(float fov);
-    float getFov() const;
+    [[nodiscard]] float getFov() const;
 
     void setZNear(float zNear);
-    float getZNear() const;
+    [[nodiscard]] float getZNear() const;
 
     void setZFar(float zFar);
-    float getZFar() const;
+    [[nodiscard]] float getZFar() const;
 
     void setModelPath(const QString &path);
-    QString getModelPath() const;
+    [[nodiscard]] QString getModelPath() const;
 
     void setLightColor(const QColor &color);
-    QColor getLightColor() const;
+    [[nodiscard]] QColor getLightColor() const;
 
     void setKAmbient(float kAmbient);
-    float getKAmbient() const;
+    [[nodiscard]] float getKAmbient() const;
 
     void setKDiffuse(float kDiffuse);
-    float getKDiffuse() const;
+    [[nodiscard]] float getKDiffuse() const;
 
     void setKSpecular(float kSpecular);
-    float getKSpecular() const;
+    [[nodiscard]] float getKSpecular() const;
 
   signals:
     void fovChanged(float fov);

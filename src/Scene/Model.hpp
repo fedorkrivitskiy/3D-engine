@@ -28,26 +28,14 @@ struct Model
   public:
     Model() = default;
 
-    void addMesh(Mesh &&mesh)
-    {
-        meshes_.push_back(std::forward<Mesh>(mesh));
-    }
+    void addMesh(Mesh &&mesh);
 
-    Mesh &getMesh(size_t index)
-    {
-        return meshes_[index];
-    }
+    Mesh &getMesh(size_t index);
 
-    const Mesh &getMesh(size_t index) const
-    {
-        return meshes_[index];
-    }
+    [[nodiscard]] const Mesh &getMesh(size_t index) const;
 
-    void draw(QOpenGLShaderProgram *program, int frameIndex)
-    {
-        std::ranges::for_each(meshes_, [=](Mesh &mesh) { mesh.draw(program, frameIndex); });
-    }
+    void draw(QOpenGLShaderProgram *program, int frameIndex);
 
   private:
-    std::vector<Mesh> meshes_{};
+    std::vector<Mesh> meshes_;
 };

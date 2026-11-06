@@ -28,12 +28,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     initRenderWidget();
 
-    frameUpdateTimer_ = new QTimer(this);
+    updateTimer_ = new QTimer(this);
 
-    connect(frameUpdateTimer_, &QTimer::timeout, this, &MainWindow::onFrameUpdate);
+    connect(updateTimer_, &QTimer::timeout, this, &MainWindow::onFrameUpdate);
 
-    frameUpdateTimer_->setInterval(0);
-    frameUpdateTimer_->start();
+    updateTimer_->setInterval(0);
+    updateTimer_->start();
 }
 
 MainWindow::~MainWindow()
@@ -50,9 +50,9 @@ void MainWindow::onFrameUpdate()
 
 void MainWindow::onSettingsButtonClicked()
 {
-    isSettingsWidgetVisible = !isSettingsWidgetVisible;
+    isSettingsWidgetVisible_ = !isSettingsWidgetVisible_;
 
-    ui->settingsWidget->setVisible(isSettingsWidgetVisible);
+    ui->settingsWidget->setVisible(isSettingsWidgetVisible_);
 }
 
 void MainWindow::initSettingsWidget()
@@ -60,7 +60,7 @@ void MainWindow::initSettingsWidget()
     SettingsModel *settingsModel = Core::get().getSettingsModel();
     ui->settingsWidget->setModel(settingsModel);
 
-    ui->settingsWidget->setVisible(isSettingsWidgetVisible);
+    ui->settingsWidget->setVisible(isSettingsWidgetVisible_);
 }
 
 void MainWindow::initStatisticsWidget()
@@ -73,5 +73,4 @@ void MainWindow::initStatisticsWidget()
 
 void MainWindow::initRenderWidget()
 {
-    //
 }

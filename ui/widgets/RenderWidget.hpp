@@ -14,6 +14,8 @@ class RenderWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
     Q_OBJECT
 
+    Q_DISABLE_COPY_MOVE(RenderWidget)
+
   public:
     explicit RenderWidget(QWidget *parent = nullptr);
     ~RenderWidget() override;

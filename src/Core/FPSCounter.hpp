@@ -9,16 +9,26 @@ class FPSCounter final
     FPSCounter() = default;
 
     void update();
-    float getFps() const;
-    float getAverageFps() const;
-    float getMinFps() const;
-    float getMaxFps() const;
-    float getFrameTime() const;
-    float getAverageFrameTime() const;
-    float getDeltaTime() const;
-    int getTotalFrames() const;
+
     void reset();
+
     void setSampleWindow(int samples);
+
+    [[nodiscard]] float getFps() const;
+
+    [[nodiscard]] float getAverageFps() const;
+
+    [[nodiscard]] float getMinFps() const;
+
+    [[nodiscard]] float getMaxFps() const;
+
+    [[nodiscard]] float getFrameTime() const;
+
+    [[nodiscard]] float getAverageFrameTime() const;
+
+    [[nodiscard]] float getDeltaTime() const;
+
+    [[nodiscard]] int getTotalFrames() const;
 
   private:
     using Clock = std::chrono::steady_clock;

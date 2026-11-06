@@ -27,11 +27,15 @@ class Mesh final
     Mesh();
 
     void setVertices(const std::vector<std::vector<VertexData>> &vertices);
+
     void setIndices(const std::vector<Index> &indices);
 
     void setColorTexture(const QString &path);
+
     void setNormalsTexture(const QString &path);
+
     void setGlossinessTexture(const QString &path);
+
     void setSpecularTexture(const QString &path);
 
     void draw(QOpenGLShaderProgram *program, int frameIndex);

@@ -11,13 +11,10 @@ class Core final
 
     void init();
 
-    SettingsModel *getSettingsModel() const;
+    [[nodiscard]] SettingsModel *getSettingsModel() const;
 
   private:
     Core() = default;
 
-    ~Core() = default;
-
-  private:
     std::unique_ptr<SettingsModel> settingsModel_{nullptr};
 };

@@ -19,6 +19,8 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
+    Q_DISABLE_COPY_MOVE(MainWindow)
+
   public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override;
@@ -37,7 +39,7 @@ class MainWindow : public QMainWindow
 
     std::unique_ptr<FPSCounter> counter_;
 
-    QTimer *frameUpdateTimer_{nullptr};
+    QTimer *updateTimer_{nullptr};
 
-    bool isSettingsWidgetVisible{true};
+    bool isSettingsWidgetVisible_{true};
 };
