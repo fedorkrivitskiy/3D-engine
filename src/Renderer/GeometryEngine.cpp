@@ -30,12 +30,12 @@ void GeometryEngine::initTextures()
         "hellknight_eyes.png",
     };
 
-    std::ranges::for_each(filenames, [this, i = 0](const QString &filename) mutable {
+    std::ranges::for_each(filenames, [this, index = 0](const QString &filename) mutable {
         QString path =
             QString("%1/%2/%3").arg(Constants::kModelDirectoryPath, Constants::kTexturesDirectoryPath, filename);
 
-        model_.getMesh(i).setColorTexture(path);
-        i++;
+        model_.getMesh(index).setColorTexture(path);
+        index++;
     });
 
     std::vector<QString> normalsFilenames = {
@@ -45,12 +45,12 @@ void GeometryEngine::initTextures()
         "hellknight_eyes_n.png",
     };
 
-    std::ranges::for_each(normalsFilenames, [this, i = 0](const QString &filename) mutable {
+    std::ranges::for_each(normalsFilenames, [this, index = 0](const QString &filename) mutable {
         QString path =
             QString("%1/%2/%3").arg(Constants::kModelDirectoryPath, Constants::kTexturesDirectoryPath, filename);
 
-        model_.getMesh(i).setNormalsTexture(path);
-        i++;
+        model_.getMesh(index).setNormalsTexture(path);
+        index++;
     });
 
     std::vector<QString> glossinessFilenames = {
@@ -60,12 +60,12 @@ void GeometryEngine::initTextures()
         "hellknight_eyes_e.png",
     };
 
-    std::ranges::for_each(glossinessFilenames, [this, i = 0](const QString &filename) mutable {
+    std::ranges::for_each(glossinessFilenames, [this, index = 0](const QString &filename) mutable {
         QString path =
             QString("%1/%2/%3").arg(Constants::kModelDirectoryPath, Constants::kTexturesDirectoryPath, filename);
 
-        model_.getMesh(i).setGlossinessTexture(path);
-        i++;
+        model_.getMesh(index).setGlossinessTexture(path);
+        index++;
     });
 
     std::vector<QString> specularFilenames = {
@@ -75,12 +75,12 @@ void GeometryEngine::initTextures()
         "hellknight_eyes_s.png",
     };
 
-    std::ranges::for_each(specularFilenames, [this, i = 0](const QString &filename) mutable {
+    std::ranges::for_each(specularFilenames, [this, index = 0](const QString &filename) mutable {
         QString path =
             QString("%1/%2/%3").arg(Constants::kModelDirectoryPath, Constants::kTexturesDirectoryPath, filename);
 
-        model_.getMesh(i).setSpecularTexture(path);
-        i++;
+        model_.getMesh(index).setSpecularTexture(path);
+        index++;
     });
 }
 
@@ -119,38 +119,38 @@ void GeometryEngine::initModel()
             {
                 const Face &face = modelFaces[offset + j];
 
-                const size_t v0 = face[0][0];
-                const size_t v1 = face[1][0];
-                const size_t v2 = face[2][0];
+                const size_t vertex0Index = face[0][0];
+                const size_t vertex1Index = face[1][0];
+                const size_t vertex2Index = face[2][0];
 
-                const size_t vt0 = face[0][1];
-                const size_t vt1 = face[1][1];
-                const size_t vt2 = face[2][1];
+                const size_t vertexTexture0Index = face[0][1];
+                const size_t vertexTexture1Index = face[1][1];
+                const size_t vertexTexture2Index = face[2][1];
 
-                const size_t vn0 = face[0][2];
-                const size_t vn1 = face[1][2];
-                const size_t vn2 = face[2][2];
+                const size_t vertexNormal0Index = face[0][2];
+                const size_t vertexNormal1Index = face[1][2];
+                const size_t vertexNormal2Index = face[2][2];
 
-                const auto &p0 = modelVertices[v0];
-                const auto &p1 = modelVertices[v1];
-                const auto &p2 = modelVertices[v2];
+                const auto &p0 = modelVertices[vertex0Index];
+                const auto &p1 = modelVertices[vertex1Index];
+                const auto &p2 = modelVertices[vertex2Index];
 
-                const auto &uv0 = textureVertices[vt0];
-                const auto &uv1 = textureVertices[vt1];
-                const auto &uv2 = textureVertices[vt2];
+                const auto &uv0 = textureVertices[vertexTexture0Index];
+                const auto &uv1 = textureVertices[vertexTexture1Index];
+                const auto &uv2 = textureVertices[vertexTexture2Index];
 
                 QVector3D edge1 = p1 - p0;
                 QVector3D edge2 = p2 - p0;
                 QVector2D deltaUV1 = uv1 - uv0;
                 QVector2D deltaUV2 = uv2 - uv0;
 
-                float r = 1.0f / (deltaUV1.x() * deltaUV2.y() - deltaUV1.y() * deltaUV2.x());
-                QVector3D tangent = (edge1 * deltaUV2.y() - edge2 * deltaUV1.y()) * r;
+                float r = 1.0f / ((deltaUV1.x() * deltaUV2.y()) - (deltaUV1.y() * deltaUV2.x()));
+                QVector3D tangent = ((edge1 * deltaUV2.y()) - (edge2 * deltaUV1.y())) * r;
                 tangent.normalize();
 
-                vertices.push_back({p0, uv0, normals[vn0], tangent});
-                vertices.push_back({p1, uv1, normals[vn1], tangent});
-                vertices.push_back({p2, uv2, normals[vn2], tangent});
+                vertices.push_back({p0, uv0, normals[vertexNormal0Index], tangent});
+                vertices.push_back({p1, uv1, normals[vertexNormal1Index], tangent});
+                vertices.push_back({p2, uv2, normals[vertexNormal2Index], tangent});
 
                 indices.push_back(currentIndex++);
                 indices.push_back(currentIndex++);

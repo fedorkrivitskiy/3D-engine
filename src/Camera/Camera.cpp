@@ -3,6 +3,7 @@
 #include <QVector3D>
 #include <QtMath>
 #include <algorithm>
+#include <numbers>
 
 namespace
 {

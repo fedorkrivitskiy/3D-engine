@@ -1,5 +1,5 @@
-#include "mainwindow.hpp"
-#include "./ui_mainwindow.h"
+#include "MainWindow.hpp"
+#include "./ui_MainWindow.h"
 
 #include <QKeyEvent>
 #include <QTimer>
@@ -9,9 +9,7 @@
 #include "Core/Core.hpp"
 #include "Core/Settings/SettingsModel.hpp"
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow), updateTimer_(new QTimer(this))
 {
     ui->setupUi(this);
 
@@ -27,8 +25,6 @@ MainWindow::MainWindow(QWidget *parent)
     initSettingsWidget();
 
     initRenderWidget();
-
-    updateTimer_ = new QTimer(this);
 
     connect(updateTimer_, &QTimer::timeout, this, &MainWindow::onFrameUpdate);
 

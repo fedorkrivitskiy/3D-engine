@@ -3,7 +3,6 @@
 #include <QVector3D>
 
 #include <format>
-#include <memory>
 #include <string>
 
 #include "Core/Constants.hpp"
@@ -12,7 +11,7 @@
 
 bool Scene::init()
 {
-    std::unique_ptr<ModelLoader> parser{new ModelLoader{}};
+    ModelLoader modelLoader;
 
     models_.reserve(Constants::kFramesCount);
 
@@ -20,7 +19,7 @@ bool Scene::init()
     {
         std::string path = std::format("{}/Hell Knight{:04d}.obj", Constants::kModelDirectoryPath, i);
 
-        models_.push_back(parser->loadModel(path));
+        models_.push_back(modelLoader.loadModel(path));
     }
 
     return true;

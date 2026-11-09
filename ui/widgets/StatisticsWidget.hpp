@@ -34,7 +34,7 @@ class StatsWidget : public QWidget
         QVector3D up{};
         float scale{};
 
-        std::string toString() const;
+        [[nodiscard]] std::string toString() const;
     };
 
     struct RendererStats
@@ -47,7 +47,7 @@ class StatsWidget : public QWidget
         float minFps{};
         int totalFrames{};
 
-        std::string toString() const;
+        [[nodiscard]] std::string toString() const;
     };
 
     CameraStats getCameraStats();
