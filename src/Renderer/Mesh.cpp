@@ -17,7 +17,7 @@ namespace
 {
 std::unique_ptr<QOpenGLTexture> loadTextureFromFile(const QString &path)
 {
-    std::unique_ptr<QOpenGLTexture> texture = std::make_unique<QOpenGLTexture>(QImage(path) /*.flipped()*/);
+    std::unique_ptr<QOpenGLTexture> texture = std::make_unique<QOpenGLTexture>(QImage(path).flipped());
 
     texture->setMinificationFilter(QOpenGLTexture::Nearest);
     texture->setMagnificationFilter(QOpenGLTexture::Linear);
