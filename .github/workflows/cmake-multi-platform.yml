@@ -2,9 +2,9 @@ name: CMake on multiple platforms
 
 on:
   push:
-    branches: [ "main", "github-actions-setup" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "main", "github-actions-setup" ]
+    branches: [ "main" ]
 
 jobs:
   build:
@@ -38,7 +38,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Linux system dependencies for GLFW and Qt 6
+      - name: Set up MSVC environment
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install Ninja
+        if: runner.os == 'Windows'
+        run: choco install ninja
+
+      - name: Install Linux system dependencies
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
@@ -52,6 +60,11 @@ jobs:
           arch: 'win64_msvc2022_64'
           cache: true
 
+      - name: Set up ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: ${{ matrix.os }}-${{ matrix.c_compiler }}-${{ matrix.build_type }}
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -59,6 +72,14 @@ jobs:
 
       - name: Install Conan
         run: pip install "conan>=2.0"
+
+      - name: Cache Conan packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.conan2/p
+          key: conan-${{ matrix.os }}-${{ matrix.c_compiler }}-${{ matrix.build_type }}-${{ hashFiles('**/conanfile.py', '**/conanfile.txt') }}
+          restore-keys: |
+            conan-${{ matrix.os }}-${{ matrix.c_compiler }}-${{ matrix.build_type }}-
 
       - name: Detect Conan profile
         run: conan profile detect --force
@@ -69,11 +90,16 @@ jobs:
           --build=missing
           -s build_type=${{ matrix.build_type }}
           -s compiler.cppstd=20
+          -c tools.cmake.cmaketoolchain:generator=Ninja
           -c tools.system.package_manager:mode=install
           -c tools.system.package_manager:sudo=True
 
       - name: Configure CMake
-        run: cmake --preset conan-${{ matrix.build_type == 'Release' && 'release' || 'debug' }} -DCMAKE_PREFIX_PATH="${{ env.Qt6_DIR }}"
+        run: >
+          cmake --preset conan-${{ matrix.build_type == 'Release' && 'release' || 'debug' }}
+          -DCMAKE_PREFIX_PATH="${{ env.Qt6_DIR || env.QT_ROOT_DIR }}"
+          -DCMAKE_C_COMPILER_LAUNCHER=ccache
+          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
 
       - name: Build Project
         run: cmake --build --preset conan-${{ matrix.build_type == 'Release' && 'release' || 'debug' }}
