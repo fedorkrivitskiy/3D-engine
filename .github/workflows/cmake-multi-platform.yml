@@ -2,9 +2,9 @@ name: CMake on multiple platforms
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "github-actions-setup" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "github-actions-setup" ]
 
 jobs:
   build:
@@ -73,10 +73,10 @@ jobs:
           -c tools.system.package_manager:sudo=True
 
       - name: Configure CMake
-        run: cmake --preset conan-${{ matrix.build_type == 'Release' && 'default' || 'debug' }} -DCMAKE_PREFIX_PATH="${{ env.Qt6_DIR }}"
+        run: cmake --preset conan-${{ matrix.build_type == 'Release' && 'release' || 'debug' }} -DCMAKE_PREFIX_PATH="${{ env.Qt6_DIR }}"
 
       - name: Build Project
-        run: cmake --build --preset conan-${{ matrix.build_type == 'Release' && 'default' || 'debug' }}
+        run: cmake --build --preset conan-${{ matrix.build_type == 'Release' && 'release' || 'debug' }}
 
       - name: Run Tests
-        run: ctest --preset conan-${{ matrix.build_type == 'Release' && 'default' || 'debug' }} --output-on-failure
+        run: ctest --preset conan-${{ matrix.build_type == 'Release' && 'release' || 'debug' }} --output-on-failure
