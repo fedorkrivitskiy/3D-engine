@@ -24,6 +24,14 @@ struct SceneSettings
     float kSpecular{};
 };
 
+struct MovementSettings
+{
+    float movementSpeed{};
+    float acceleration{};
+    float mouseSensitivity{};
+    float rotationSmoothing{};
+};
+
 class SettingsModel final : public QObject
 {
     Q_OBJECT
@@ -35,7 +43,7 @@ class SettingsModel final : public QObject
     ~SettingsModel() override;
 
     void load();
-    void save();
+    void save() const;
 
     void setFov(float fov);
     [[nodiscard]] float getFov() const;
@@ -61,6 +69,18 @@ class SettingsModel final : public QObject
     void setKSpecular(float kSpecular);
     [[nodiscard]] float getKSpecular() const;
 
+    void setMovementSpeed(float movementSpeed);
+    [[nodiscard]] float getMovementSpeed() const;
+
+    void setAcceleration(float acceleration);
+    [[nodiscard]] float getAcceleration() const;
+
+    void setMouseSensitivity(float mouseSensitivity);
+    [[nodiscard]] float getMouseSensitivity() const;
+
+    void setRotationSmoothing(float rotationSmoothing);
+    [[nodiscard]] float getRotationSmoothing() const;
+
   signals:
     void fovChanged(float fov);
     void zNearChanged(float zNear);
@@ -73,8 +93,14 @@ class SettingsModel final : public QObject
     void diffuseChanged(float kDiffuse);
     void specularChanged(float kSpecular);
 
+    void movementSpeedChanged(float movementSpeed);
+    void accelerationChanged(float acceleration);
+    void mouseSensitivityChanged(float mouseSensitivity);
+    void rotationSmoothingChanged(float rotationSmoothing);
+
   private:
     CameraSettings cameraSettings_{};
     ModelSettings modelSettings_{};
     SceneSettings sceneSettings_{};
+    MovementSettings movementSettings_{};
 };

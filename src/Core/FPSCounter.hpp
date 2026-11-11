@@ -12,8 +12,6 @@ class FPSCounter final
 
     void reset();
 
-    void setSampleWindow(int samples);
-
     [[nodiscard]] float getFps() const;
 
     [[nodiscard]] float getAverageFps() const;
@@ -39,18 +37,19 @@ class FPSCounter final
     TimePoint lastUpdateTime_{Clock::now()};
     TimePoint lastFrameTime_{Clock::now()};
     int frameCount_{0};
-    float elapsedTime_{0.0f};
-    float fps_{0.0f};
-    float deltaTime_{0.0f};
+    float elapsedTime_{0.0F};
+    float fps_{0.0F};
+    float deltaTime_{0.0F};
 
-    float frameTime_{0.0f};
+    float frameTime_{0.0F};
     std::deque<float> frameTimes_;
-    int sampleWindow_{60};
-    float averageFps_{0.0f};
-    float minFps_{0.0f};
-    float maxFps_{0.0f};
+    float averageFps_{0.0F};
+    float minFps_{0.0F};
+    float maxFps_{0.0F};
 
-    float updateInterval_{0.5f};
-    float timeSinceLastFpsUpdate_{0.0f};
+    static constexpr float kUpdateInterval{0.5F};
+    static constexpr int kSampleWindow{60};
+
+    float timeSinceLastFpsUpdate_{0.0F};
     int framesSinceLastUpdate_{0};
 };

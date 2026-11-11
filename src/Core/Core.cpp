@@ -11,7 +11,7 @@ Core &Core::get()
 
 void Core::init()
 {
-    settingsModel_.reset(new SettingsModel());
+    settingsModel_ = std::make_unique<SettingsModel>();
 }
 
 SettingsModel *Core::getSettingsModel() const

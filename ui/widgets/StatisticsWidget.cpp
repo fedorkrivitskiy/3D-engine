@@ -11,7 +11,7 @@ namespace
 {
 std::string toString(const QVector3D &vec)
 {
-    return std::format("[{:.2f}, {:.2f}, {:.2f}]", vec.x(), vec.y(), vec.z());
+    return std::format("[{:.2F}, {:.2F}, {:.2F}]", vec.x(), vec.y(), vec.z());
 }
 } // namespace
 
@@ -78,14 +78,14 @@ std::string StatsWidget::CameraStats::toString() const
     return std::format("Eye: {}\n"
                        "Target: {}\n"
                        "Up: {}\n"
-                       "Scale: {:.2f}",
+                       "Scale: {:.2F}",
                        ::toString(eye), ::toString(target), ::toString(up), scale);
 }
 
 std::string StatsWidget::RendererStats::toString() const
 {
-    return std::format("FPS: {:.0f} (Avg: {:.0f}, Min: {:.0f}, Max: {:.0f})\n"
-                       "Frame Time: {:.2f}ms (Avg: {:.2f}ms)\n"
+    return std::format("FPS: {:.0F} (Avg: {:.0F}, Min: {:.0F}, Max: {:.0F})\n"
+                       "Frame Time: {:.2F}ms (Avg: {:.2F}ms)\n"
                        "Total Frames: {}",
                        fps, averageFps, minFps, maxFps, frameTime, averageFrameTime, totalFrames);
 }

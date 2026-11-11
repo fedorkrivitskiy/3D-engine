@@ -31,7 +31,7 @@ class Camera final
     QVector3D target_{0, 0, 0};
     QVector3D up_{0, 1, 0};
 
-    float scale_{1.0f};
-    float yaw_{-std::numbers::pi_v<float> / 2};
+    float scale_{1.0F};
+    float yaw_{-std::numbers::pi_v<float> / 2.F};
     float pitch_{};
 };

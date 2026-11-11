@@ -35,15 +35,9 @@ class CameraController : public QObject
     QElapsedTimer deltaTimer_;
 
     QSet<int> pressedKeys_;
-    QVector3D currentVelocity_{0.0f, 0.0f, 0.0f};
+    QVector3D currentVelocity_{0.0F, 0.0F, 0.0F};
 
     bool isMouseLookActive_{false};
     QPointF lastMousePos_;
-    QPointF pendingMouseDelta_{0.0f, 0.0f};
-
-    // TODO: move to settings
-    float movementSpeed_{10.0f};
-    float acceleration_{15.0f};
-    float mouseSensitivity_{0.002f};
-    float rotationSmoothing_{25.0f};
+    QPointF pendingMouseDelta_{0.0F, 0.0F};
 };

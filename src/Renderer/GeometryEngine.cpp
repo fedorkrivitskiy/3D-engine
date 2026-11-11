@@ -144,7 +144,7 @@ void GeometryEngine::initModel()
                 QVector2D deltaUV1 = uv1 - uv0;
                 QVector2D deltaUV2 = uv2 - uv0;
 
-                float r = 1.0f / ((deltaUV1.x() * deltaUV2.y()) - (deltaUV1.y() * deltaUV2.x()));
+                float r = 1.0F / ((deltaUV1.x() * deltaUV2.y()) - (deltaUV1.y() * deltaUV2.x()));
                 QVector3D tangent = ((edge1 * deltaUV2.y()) - (edge2 * deltaUV1.y())) * r;
                 tangent.normalize();
 

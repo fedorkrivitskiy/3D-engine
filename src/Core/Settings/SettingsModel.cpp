@@ -4,12 +4,6 @@
 
 #include "Defaults.hpp"
 
-namespace
-{
-constexpr auto kCompanyName = "Default";
-constexpr auto kApplicationName = "3D_Engine";
-} // namespace
-
 SettingsModel::SettingsModel(QObject *parent) : QObject(parent)
 {
     load();
@@ -22,7 +16,7 @@ SettingsModel::~SettingsModel()
 
 void SettingsModel::load()
 {
-    QSettings settings{kCompanyName, kApplicationName};
+    QSettings settings{Defaults::kCompanyName, Defaults::kApplicationName};
 
     cameraSettings_.fov = settings.value("camera/fov", Defaults::Camera::kFov).toFloat();
     cameraSettings_.zFar = settings.value("camera/zFar", Defaults::Camera::kZFar).toFloat();
@@ -34,11 +28,23 @@ void SettingsModel::load()
     sceneSettings_.kAmbient = settings.value("scene/kAmbient", Defaults::Scene::kAmbient).toFloat();
     sceneSettings_.kDiffuse = settings.value("scene/kDiffuse", Defaults::Scene::kDiffuse).toFloat();
     sceneSettings_.kSpecular = settings.value("scene/kSpecular", Defaults::Scene::kSpecular).toFloat();
+
+    movementSettings_.movementSpeed =
+        settings.value("movement/movementSpeed", Defaults::Movement::kMovementSpeed).toFloat();
+
+    movementSettings_.acceleration =
+        settings.value("movement/acceleration", Defaults::Movement::kAcceleration).toFloat();
+
+    movementSettings_.mouseSensitivity =
+        settings.value("movement/mouseSensitivity", Defaults::Movement::kMouseSensitivity).toFloat();
+
+    movementSettings_.rotationSmoothing =
+        settings.value("movement/rotationSmoothing", Defaults::Movement::kRotationSmoothing).toFloat();
 }
 
-void SettingsModel::save()
+void SettingsModel::save() const
 {
-    QSettings settings{kCompanyName, kApplicationName};
+    QSettings settings{Defaults::kCompanyName, Defaults::kApplicationName};
 
     settings.setValue("camera/fov", cameraSettings_.fov);
     settings.setValue("camera/zFar", cameraSettings_.zFar);
@@ -50,6 +56,11 @@ void SettingsModel::save()
     settings.setValue("scene/kAmbient", sceneSettings_.kAmbient);
     settings.setValue("scene/kDiffuse", sceneSettings_.kDiffuse);
     settings.setValue("scene/kSpecular", sceneSettings_.kSpecular);
+
+    settings.setValue("movement/movementSpeed", movementSettings_.movementSpeed);
+    settings.setValue("movement/acceleration", movementSettings_.acceleration);
+    settings.setValue("movement/mouseSensitivity", movementSettings_.mouseSensitivity);
+    settings.setValue("movement/rotationSmoothing", movementSettings_.rotationSmoothing);
 }
 
 void SettingsModel::setFov(float fov)
@@ -178,4 +189,68 @@ void SettingsModel::setKSpecular(float kSpecular)
 float SettingsModel::getKSpecular() const
 {
     return sceneSettings_.kSpecular;
+}
+
+void SettingsModel::setMovementSpeed(float movementSpeed)
+{
+    if (qFuzzyCompare(movementSpeed, movementSettings_.movementSpeed))
+    {
+        return;
+    }
+
+    movementSettings_.movementSpeed = movementSpeed;
+    emit movementSpeedChanged(movementSpeed);
+}
+
+float SettingsModel::getMovementSpeed() const
+{
+    return movementSettings_.movementSpeed;
+}
+
+void SettingsModel::setAcceleration(float acceleration)
+{
+    if (qFuzzyCompare(acceleration, movementSettings_.acceleration))
+    {
+        return;
+    }
+
+    movementSettings_.acceleration = acceleration;
+    emit accelerationChanged(acceleration);
+}
+
+float SettingsModel::getAcceleration() const
+{
+    return movementSettings_.acceleration;
+}
+
+void SettingsModel::setMouseSensitivity(float mouseSensitivity)
+{
+    if (qFuzzyCompare(mouseSensitivity, movementSettings_.mouseSensitivity))
+    {
+        return;
+    }
+
+    movementSettings_.mouseSensitivity = mouseSensitivity;
+    emit mouseSensitivityChanged(mouseSensitivity);
+}
+
+float SettingsModel::getMouseSensitivity() const
+{
+    return movementSettings_.mouseSensitivity;
+}
+
+void SettingsModel::setRotationSmoothing(float rotationSmoothing)
+{
+    if (qFuzzyCompare(rotationSmoothing, movementSettings_.rotationSmoothing))
+    {
+        return;
+    }
+
+    movementSettings_.rotationSmoothing = rotationSmoothing;
+    emit rotationSmoothingChanged(rotationSmoothing);
+}
+
+float SettingsModel::getRotationSmoothing() const
+{
+    return movementSettings_.rotationSmoothing;
 }

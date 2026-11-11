@@ -7,10 +7,10 @@
 
 namespace
 {
-constexpr QVector3D kWorldUp{0.0f, 1.0f, 0.0f};
+constexpr QVector3D kWorldUp{0.0F, 1.0F, 0.0F};
 
-constexpr float kMaxCameraPitch = 89.f;
-constexpr float kMaxCameraPitchRadians = std::numbers::pi_v<float> * kMaxCameraPitch / 180.f;
+constexpr float kMaxCameraPitch = 89.F;
+constexpr float kMaxCameraPitchRadians = std::numbers::pi_v<float> * kMaxCameraPitch / 180.F;
 } // namespace
 
 Camera::Camera()
