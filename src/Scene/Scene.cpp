@@ -19,7 +19,9 @@ bool Scene::init()
     {
         std::string path = std::format("{}/Hell Knight{:04d}.obj", Constants::kModelDirectoryPath, i);
 
-        models_.push_back(ModelLoader::loadModel(path));
+        modelLoader.loadModel(path);
+
+        models_.push_back(modelLoader.getModel());
     }
 
     return true;

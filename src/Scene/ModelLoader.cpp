@@ -1,127 +1,195 @@
 #include "ModelLoader.hpp"
 
-#include <QVector3D>
-
 #include <algorithm>
-#include <array>
-#include <climits>
-#include <cstddef>
+#include <charconv>
 #include <cstdint>
 #include <fstream>
-#include <iosfwd>
 #include <numeric>
 #include <sstream>
-#include <string>
-#include <vector>
 
 #include "Core/Types.hpp"
 #include "Scene/Model.hpp"
 
+namespace
+{
+size_t parseIndex(std::string_view token)
+{
+    if (token.empty())
+    {
+        return static_cast<size_t>(-1);
+    }
+
+    uint32_t val = 0;
+    auto [ptr, ec] = std::from_chars(token.data(), token.data() + token.size(), val); // NOLINT
+    if (ec == std::errc{} && val > 0)
+    {
+        return static_cast<size_t>(val - 1);
+    }
+
+    return static_cast<size_t>(-1);
+}
+
+using VertexIndices = std::array<size_t, 3>;
+
+VertexIndices parseFaceVertex(std::string_view token)
+{
+    const size_t firstSlash = token.find('/');
+    if (firstSlash == std::string_view::npos)
+    {
+        return {parseIndex(token), static_cast<size_t>(-1), static_cast<size_t>(-1)};
+    }
+
+    const std::string_view vStr = token.substr(0, firstSlash);
+
+    const size_t secondSlash = token.find('/', firstSlash + 1);
+    if (secondSlash == std::string_view::npos)
+    {
+        const std::string_view vtStr = token.substr(firstSlash + 1);
+        return {parseIndex(vStr), parseIndex(vtStr), static_cast<size_t>(-1)};
+    }
+
+    const std::string_view vtStr = token.substr(firstSlash + 1, secondSlash - firstSlash - 1);
+    const std::string_view vnStr = token.substr(secondSlash + 1);
+
+    return {parseIndex(vStr), parseIndex(vtStr), parseIndex(vnStr)};
+}
+} // namespace
+
+const OBJModel &ModelLoader::getModel() const noexcept
+{
+    return model_;
+}
+
+OBJModel &ModelLoader::getModel() noexcept
+{
+    return model_;
+}
+
+void ModelLoader::parseVertex(std::istringstream &iss)
+{
+    float vertexX{};
+    float vertexY{};
+    float vertexZ{};
+
+    if (iss >> vertexX >> vertexY >> vertexZ)
+    {
+        model_.vertices.emplace_back(vertexX, vertexY, vertexZ);
+    }
+}
+
+void ModelLoader::parseNormal(std::istringstream &iss)
+{
+    float normalX{};
+    float normalY{};
+    float normalZ{};
+
+    if (iss >> normalX >> normalY >> normalZ)
+    {
+        model_.normals.emplace_back(normalX, normalY, normalZ);
+    }
+}
+
+void ModelLoader::parseTextureCoord(std::istringstream &iss)
+{
+    float textureU{};
+    float textureV{};
+
+    if (iss >> textureU >> textureV)
+    {
+        model_.textureVertices.emplace_back(textureU, textureV);
+    }
+}
+
+void ModelLoader::parseFace(std::istringstream &iss, int &faceCounter)
+{
+    faceCounter++;
+
+    std::vector<VertexIndices> faceVertices;
+    std::string token;
+
+    while (iss >> token)
+    {
+        faceVertices.push_back(parseFaceVertex(token));
+    }
+
+    const size_t numVerts = faceVertices.size();
+    if (numVerts < 3)
+    {
+        return;
+    }
+
+    for (size_t i = 1; i < numVerts - 1; ++i)
+    {
+        model_.faces.push_back(Face{faceVertices[0], faceVertices[i], faceVertices[i + 1]});
+    }
+}
+
+void ModelLoader::handleMaterialUse(int &faceCounter)
+{
+    model_.mtls.push_back(faceCounter);
+    faceCounter = 0;
+}
+
+void ModelLoader::finalizeMaterials()
+{
+    auto &mtls = model_.mtls;
+    if (mtls.empty())
+    {
+        return;
+    }
+
+    size_t sum = std::accumulate(mtls.begin(), mtls.end(), size_t{});
+    std::shift_left(mtls.begin(), mtls.end(), 1); // NOLINT
+    mtls.back() = model_.faces.size() - sum;
+}
+
 OBJModel ModelLoader::loadModel(const std::string &path)
 {
+    model_ = OBJModel{};
+
     std::ifstream file(path);
     if (!file.is_open())
     {
         return {};
     }
 
-    OBJModel model{};
-
     std::string line;
-    int index = 0;
+    int currentMtlFaceCount = 0;
 
     while (std::getline(file, line))
     {
+        if (line.empty() || line[0] == '#')
+        {
+            continue;
+        }
+
         std::istringstream iss(line);
         std::string type;
         iss >> type;
 
         if (type == "v")
         {
-            float vertexX{}, vertexY{}, vertexZ{};
-            iss >> vertexX >> vertexY >> vertexZ;
-
-            model.vertices.emplace_back(vertexX, vertexY, vertexZ);
+            parseVertex(iss);
         }
         else if (type == "f")
         {
-            index++;
-            std::vector<std::array<size_t, 3>> faceVertices;
-            std::string vertexData;
-
-            while (iss >> vertexData)
-            {
-                std::vector<std::string> parts;
-                size_t start = 0;
-                size_t end = vertexData.find('/');
-
-                while (true)
-                {
-                    parts.push_back(vertexData.substr(start, end - start));
-                    if (end == std::string::npos) {
-                        break;
-                    }
-
-                    start = end + 1;
-                    end = vertexData.find('/', start);
-                }
-
-                uint32_t vertexIndex = 0, textureVertexIndex = 0, normalVertexIndex = 0;
-
-                if (!parts[0].empty()) {
-                    vertexIndex = std::stoi(parts[0]);
-                }
-                if (parts.size() > 1 && !parts[1].empty()) {
-                    textureVertexIndex = std::stoi(parts[1]);
-                }
-                if (parts.size() > 2 && !parts[2].empty()) {
-                    normalVertexIndex = std::stoi(parts[2]);
-                }
-
-                vertexIndex = (vertexIndex != 0) ? vertexIndex - 1 : -1;
-                textureVertexIndex = (textureVertexIndex != 0) ? textureVertexIndex - 1 : -1;
-                normalVertexIndex = (normalVertexIndex != 0) ? normalVertexIndex - 1 : -1;
-
-                faceVertices.push_back({vertexIndex, textureVertexIndex, normalVertexIndex});
-            }
-
-            size_t numVerts = faceVertices.size();
-            if (numVerts < 3) {
-                continue;
-            }
-
-            for (size_t i = 1; i < numVerts - 1; ++i)
-            {
-                model.faces.push_back(Face{faceVertices[0], faceVertices[i], faceVertices[i + 1]});
-            }
+            parseFace(iss, currentMtlFaceCount);
         }
         else if (type == "vn")
         {
-            float vertexX{}, vertexY{}, vertexZ{};
-            iss >> vertexX >> vertexY >> vertexZ;
-
-            model.normals.emplace_back(vertexX, vertexY, vertexZ);
+            parseNormal(iss);
         }
         else if (type == "vt")
         {
-            float vertexX{}, vertexY{};
-            iss >> vertexX >> vertexY;
-
-            model.textureVertices.emplace_back(vertexX, vertexY);
+            parseTextureCoord(iss);
         }
         else if (type == "usemtl")
         {
-            model.mtls.push_back(index);
-            index = 0;
+            handleMaterialUse(currentMtlFaceCount);
         }
     }
 
-    auto &mtls = model.mtls;
-    const auto &faces = model.faces;
+    finalizeMaterials();
 
-    size_t sum = std::accumulate(mtls.begin(), mtls.end(), size_t{});
-    std::shift_left(mtls.begin(), mtls.end(), 1);
-    mtls.back() = faces.size() - sum;
-
-    return model;
+    return model_;
 }

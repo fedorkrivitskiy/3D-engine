@@ -33,7 +33,7 @@ class MainWindow : public QMainWindow
     void initStatisticsWidget();
     void initRenderWidget();
 
-  private:
+  private: // NOLINT
     Ui::MainWindow *ui_;
 
     std::unique_ptr<FPSCounter> counter_;
