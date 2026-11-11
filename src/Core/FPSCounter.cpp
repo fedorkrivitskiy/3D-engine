@@ -11,7 +11,8 @@ void FPSCounter::update()
     deltaTime_ = deltaDuration.count();
     lastFrameTime_ = currentTime;
 
-    frameTime_ = deltaTime_ * 1000.0F;
+    constexpr float kMillisecondsPerSecond = 1000.0F;
+    frameTime_ = deltaTime_ * kMillisecondsPerSecond;
 
     frameTimes_.push_back(frameTime_);
     if (frameTimes_.size() > kSampleWindow)
@@ -25,18 +26,18 @@ void FPSCounter::update()
 
     if (timeSinceLastFpsUpdate_ >= kUpdateInterval)
     {
-        fps_ = framesSinceLastUpdate_ / timeSinceLastFpsUpdate_;
+        fps_ = static_cast<float>(framesSinceLastUpdate_) / timeSinceLastFpsUpdate_;
         framesSinceLastUpdate_ = 0;
         timeSinceLastFpsUpdate_ = 0.0F;
 
         if (frameTimes_.size() >= 2)
         {
             float sum = std::accumulate(frameTimes_.begin(), frameTimes_.end(), 0.0F);
-            averageFps_ = 1000.0F / (sum / frameTimes_.size());
+            averageFps_ = kMillisecondsPerSecond / (sum / static_cast<float>(frameTimes_.size()));
 
-            auto [minIt, maxIt] = std::minmax_element(frameTimes_.begin(), frameTimes_.end());
-            minFps_ = 1000.0F / *maxIt;
-            maxFps_ = 1000.0F / *minIt;
+            auto [minIt, maxIt] = std::ranges::minmax_element(frameTimes_);
+            minFps_ = kMillisecondsPerSecond / *maxIt;
+            maxFps_ = kMillisecondsPerSecond / *minIt;
         }
     }
 }
@@ -73,7 +74,7 @@ float FPSCounter::getAverageFrameTime() const
         return 0.0F;
     }
 
-    return std::accumulate(frameTimes_.begin(), frameTimes_.end(), 0.0F) / frameTimes_.size();
+    return std::accumulate(frameTimes_.begin(), frameTimes_.end(), 0.0F) / static_cast<float>(frameTimes_.size());
 }
 
 float FPSCounter::getDeltaTime() const

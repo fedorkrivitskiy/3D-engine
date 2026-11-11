@@ -30,7 +30,6 @@ class CameraController : public QObject
 
     [[nodiscard]] QVector3D computeInputDirection() const;
 
-  private:
     Camera *camera_{nullptr};
     QElapsedTimer deltaTimer_;
 

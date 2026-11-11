@@ -31,8 +31,8 @@ class Scene final
     [[nodiscard]] const std::vector<size_t> &getMtls() const;
 
   private:
-    QVector3D modelPosition_{};
-    QVector3D modelRotation_{};
+    QVector3D modelPosition_;
+    QVector3D modelRotation_;
     std::vector<OBJModel> models_;
     size_t index_{};
 };

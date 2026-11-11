@@ -19,20 +19,22 @@ bool Scene::init()
     {
         std::string path = std::format("{}/Hell Knight{:04d}.obj", Constants::kModelDirectoryPath, i);
 
-        models_.push_back(modelLoader.loadModel(path));
+        modelLoader.loadModel(path);
+
+        models_.push_back(modelLoader.getModel());
     }
 
     return true;
 }
 
-void Scene::rotateModel(const QVector3D &rotate_vector)
+void Scene::rotateModel(const QVector3D &rotation)
 {
-    modelRotation_ += rotate_vector;
+    modelRotation_ += rotation;
 }
 
-void Scene::moveModel(const QVector3D &move_vector)
+void Scene::moveModel(const QVector3D &direction)
 {
-    modelPosition_ += move_vector;
+    modelPosition_ += direction;
 }
 
 void Scene::update()

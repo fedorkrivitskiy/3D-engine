@@ -9,16 +9,16 @@
 #include "Core/Core.hpp"
 #include "Core/Settings/SettingsModel.hpp"
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow), updateTimer_(new QTimer(this))
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui_(new Ui::MainWindow), updateTimer_(new QTimer(this))
 {
-    ui->setupUi(this);
+    ui_->setupUi(this);
 
     showFullScreen();
 
     counter_ = std::make_unique<FPSCounter>();
 
-    connect(ui->quitButton, &QPushButton::clicked, this, &QMainWindow::close);
-    connect(ui->settingsButton, &QPushButton::clicked, this, &MainWindow::onSettingsButtonClicked);
+    connect(ui_->quitButton, &QPushButton::clicked, this, &QMainWindow::close);
+    connect(ui_->settingsButton, &QPushButton::clicked, this, &MainWindow::onSettingsButtonClicked);
 
     initStatisticsWidget();
 
@@ -34,37 +34,37 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
 MainWindow::~MainWindow()
 {
-    delete ui;
+    delete ui_;
 }
 
 void MainWindow::onFrameUpdate()
 {
     counter_->update();
-    ui->statsWidget->updateStats();
-    ui->renderWidget->update();
+    ui_->statsWidget->updateStats();
+    ui_->renderWidget->update();
 }
 
 void MainWindow::onSettingsButtonClicked()
 {
     isSettingsWidgetVisible_ = !isSettingsWidgetVisible_;
 
-    ui->settingsWidget->setVisible(isSettingsWidgetVisible_);
+    ui_->settingsWidget->setVisible(isSettingsWidgetVisible_);
 }
 
 void MainWindow::initSettingsWidget()
 {
     SettingsModel *settingsModel = Core::get().getSettingsModel();
-    ui->settingsWidget->setModel(settingsModel);
+    ui_->settingsWidget->setModel(settingsModel);
 
-    ui->settingsWidget->setVisible(isSettingsWidgetVisible_);
+    ui_->settingsWidget->setVisible(isSettingsWidgetVisible_);
 }
 
 void MainWindow::initStatisticsWidget()
 {
     // ui->statsWidget->setCamera(camera_.get());
-    ui->statsWidget->setFPSCounter(counter_.get());
+    ui_->statsWidget->setFPSCounter(counter_.get());
 
-    ui->statsWidget->raise();
+    ui_->statsWidget->raise();
 }
 
 void MainWindow::initRenderWidget()
