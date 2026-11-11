@@ -11,5 +11,5 @@ class ModelLoader final
     // add getVertices(), getNormals() etc.
     ModelLoader() = default;
 
-    OBJModel loadModel(const std::string &path);
+    static OBJModel loadModel(const std::string &path);
 };

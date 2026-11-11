@@ -18,13 +18,13 @@ Camera::Camera()
     updateForward();
 }
 
-void Camera::move(const QVector3D &move_vector)
+void Camera::move(const QVector3D &direction)
 {
     QVector3D left = QVector3D::crossProduct(up_, forward_).normalized();
 
-    QVector3D leftMoveVector = left * move_vector.x();
-    QVector3D forwardMoveVector = forward_ * move_vector.y();
-    QVector3D upMoveVector = kWorldUp * move_vector.z();
+    QVector3D leftMoveVector = left * direction.x();
+    QVector3D forwardMoveVector = forward_ * direction.y();
+    QVector3D upMoveVector = kWorldUp * direction.z();
     QVector3D resultVector = leftMoveVector + forwardMoveVector + upMoveVector;
 
     eye_ += resultVector;

@@ -29,13 +29,12 @@ class MainWindow : public QMainWindow
     void onSettingsButtonClicked();
     void onFrameUpdate();
 
-  private:
     void initSettingsWidget();
     void initStatisticsWidget();
     void initRenderWidget();
 
   private:
-    Ui::MainWindow *ui;
+    Ui::MainWindow *ui_;
 
     std::unique_ptr<FPSCounter> counter_;
 

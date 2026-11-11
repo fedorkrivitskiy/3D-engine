@@ -10,7 +10,8 @@ Checks: >
   readability-*,
   -cppcoreguidelines-owning-memory,
   -modernize-use-trailing-return-type,
-  -readability-isolate-declaration
+  -readability-isolate-declaration,
+  -cppcoreguidelines-pro-bounds-avoid-unchecked-container-access
 
 WarningsAsErrors: ''
 HeaderFilterRegex: '(src|include)/.*'

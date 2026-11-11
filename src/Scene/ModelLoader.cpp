@@ -17,9 +17,9 @@
 #include "Core/Types.hpp"
 #include "Scene/Model.hpp"
 
-OBJModel ModelLoader::loadModel(const std::string &file_path)
+OBJModel ModelLoader::loadModel(const std::string &path)
 {
-    std::ifstream file(file_path);
+    std::ifstream file(path);
     if (!file.is_open())
     {
         return {};
@@ -38,10 +38,10 @@ OBJModel ModelLoader::loadModel(const std::string &file_path)
 
         if (type == "v")
         {
-            float x{}, y{}, z{};
-            iss >> x >> y >> z;
+            float vertexX{}, vertexY{}, vertexZ{};
+            iss >> vertexX >> vertexY >> vertexZ;
 
-            model.vertices.emplace_back(x, y, z);
+            model.vertices.emplace_back(vertexX, vertexY, vertexZ);
         }
         else if (type == "f")
         {
@@ -66,23 +66,23 @@ OBJModel ModelLoader::loadModel(const std::string &file_path)
                     end = vertexData.find('/', start);
                 }
 
-                uint32_t v = 0, vt = 0, vn = 0;
+                uint32_t vertexIndex = 0, textureVertexIndex = 0, normalVertexIndex = 0;
 
                 if (!parts[0].empty()) {
-                    v = std::stoi(parts[0]);
+                    vertexIndex = std::stoi(parts[0]);
                 }
                 if (parts.size() > 1 && !parts[1].empty()) {
-                    vt = std::stoi(parts[1]);
+                    textureVertexIndex = std::stoi(parts[1]);
                 }
                 if (parts.size() > 2 && !parts[2].empty()) {
-                    vn = std::stoi(parts[2]);
+                    normalVertexIndex = std::stoi(parts[2]);
                 }
 
-                v = (v != 0) ? v - 1 : -1;
-                vt = (vt != 0) ? vt - 1 : -1;
-                vn = (vn != 0) ? vn - 1 : -1;
+                vertexIndex = (vertexIndex != 0) ? vertexIndex - 1 : -1;
+                textureVertexIndex = (textureVertexIndex != 0) ? textureVertexIndex - 1 : -1;
+                normalVertexIndex = (normalVertexIndex != 0) ? normalVertexIndex - 1 : -1;
 
-                faceVertices.push_back({v, vt, vn});
+                faceVertices.push_back({vertexIndex, textureVertexIndex, normalVertexIndex});
             }
 
             size_t numVerts = faceVertices.size();
@@ -97,17 +97,17 @@ OBJModel ModelLoader::loadModel(const std::string &file_path)
         }
         else if (type == "vn")
         {
-            float x{}, y{}, z{};
-            iss >> x >> y >> z;
+            float vertexX{}, vertexY{}, vertexZ{};
+            iss >> vertexX >> vertexY >> vertexZ;
 
-            model.normals.emplace_back(x, y, z);
+            model.normals.emplace_back(vertexX, vertexY, vertexZ);
         }
         else if (type == "vt")
         {
-            float x{}, y{};
-            iss >> x >> y;
+            float vertexX{}, vertexY{};
+            iss >> vertexX >> vertexY;
 
-            model.textureVertices.emplace_back(x, y);
+            model.textureVertices.emplace_back(vertexX, vertexY);
         }
         else if (type == "usemtl")
         {
