@@ -26,7 +26,6 @@ class GeometryEngine final : protected QOpenGLFunctions
     void initModel();
     void initTextures();
 
-  private:
     Scene scene_;
     Model model_;
     int index_{};

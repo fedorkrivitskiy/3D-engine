@@ -6,6 +6,7 @@
 #include <QVector2D>
 
 #include <cmath>
+#include <memory>
 
 #include "Camera/Camera.hpp"
 #include "Camera/CameraController.hpp"
@@ -64,22 +65,26 @@ void RenderWidget::initializeGL()
 
     initShaders();
 
-    geometries_.reset(new GeometryEngine());
+    geometries_ = std::make_unique<GeometryEngine>();
 }
 
 void RenderWidget::initShaders()
 {
-    if (!program_.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/vshader.glsl"))
+    if (!program_.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/vshader.glsl")) {
         close();
+    }
 
-    if (!program_.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/fshader.glsl"))
+    if (!program_.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/fshader.glsl")) {
         close();
+    }
 
-    if (!program_.link())
+    if (!program_.link()) {
         close();
+    }
 
-    if (!program_.bind())
+    if (!program_.bind()) {
         close();
+    }
 }
 
 QMatrix4x4 RenderWidget::getProjectionMatrix()

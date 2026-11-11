@@ -33,7 +33,6 @@ class FPSCounter final
     using TimePoint = std::chrono::time_point<Clock>;
     using Duration = std::chrono::duration<float>;
 
-  private:
     TimePoint lastUpdateTime_{Clock::now()};
     TimePoint lastFrameTime_{Clock::now()};
     int frameCount_{0};

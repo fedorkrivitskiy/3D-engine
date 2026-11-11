@@ -146,9 +146,18 @@ void GeometryEngine::initModel()
                 QVector3D tangent = ((edge1 * deltaUV2.y()) - (edge2 * deltaUV1.y())) * reciprocalDeterminant;
                 tangent.normalize();
 
-                vertices.push_back({vertex0, textureVertex0, normals[vertexNormal0Index], tangent});
-                vertices.push_back({vertex1, textureVertex1, normals[vertexNormal1Index], tangent});
-                vertices.push_back({vertex2, textureVertex2, normals[vertexNormal2Index], tangent});
+                vertices.push_back({.position = vertex0,
+                                    .texCoord = textureVertex0,
+                                    .normal = normals[vertexNormal0Index],
+                                    .tangent = tangent});
+                vertices.push_back({.position = vertex1,
+                                    .texCoord = textureVertex1,
+                                    .normal = normals[vertexNormal1Index],
+                                    .tangent = tangent});
+                vertices.push_back({.position = vertex2,
+                                    .texCoord = textureVertex2,
+                                    .normal = normals[vertexNormal2Index],
+                                    .tangent = tangent});
 
                 indices.push_back(currentIndex++);
                 indices.push_back(currentIndex++);

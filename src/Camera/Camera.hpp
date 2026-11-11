@@ -25,7 +25,6 @@ class Camera final
   private:
     void updateForward();
 
-  private:
     QVector3D forward_{0, 0, 0};
     QVector3D eye_{0.0, 0.0, 0.0};
     QVector3D target_{0, 0, 0};

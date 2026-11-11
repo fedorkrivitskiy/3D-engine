@@ -54,7 +54,6 @@ class StatsWidget : public QWidget
 
     RendererStats getRendererStats();
 
-  private:
     Ui::StatsWidget *ui_{nullptr};
 
     Camera *camera_{nullptr};
