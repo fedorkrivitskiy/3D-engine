@@ -90,14 +90,12 @@ void GeometryEngine::initModel()
 
     size_t offset = 0;
 
-    for (size_t i = 0; i < modelMtls.size(); ++i)
+    for (size_t currentSize : modelMtls)
     {
         std::vector<std::vector<VertexData>> meshVertices{};
         meshVertices.reserve(Constants::kFramesCount);
 
         std::vector<Index> meshIndicies{};
-
-        size_t currentSize = modelMtls[i];
 
         for (size_t j = 0; j < Constants::kFramesCount; ++j)
         {
@@ -131,26 +129,26 @@ void GeometryEngine::initModel()
                 const size_t vertexNormal1Index = face[1][2];
                 const size_t vertexNormal2Index = face[2][2];
 
-                const auto &p0 = modelVertices[vertex0Index];
-                const auto &p1 = modelVertices[vertex1Index];
-                const auto &p2 = modelVertices[vertex2Index];
+                const auto &vertex0 = modelVertices[vertex0Index];
+                const auto &vertex1 = modelVertices[vertex1Index];
+                const auto &vertex2 = modelVertices[vertex2Index];
 
-                const auto &uv0 = textureVertices[vertexTexture0Index];
-                const auto &uv1 = textureVertices[vertexTexture1Index];
-                const auto &uv2 = textureVertices[vertexTexture2Index];
+                const auto &textureVertex0 = textureVertices[vertexTexture0Index];
+                const auto &textureVertex1 = textureVertices[vertexTexture1Index];
+                const auto &textureVertex2 = textureVertices[vertexTexture2Index];
 
-                QVector3D edge1 = p1 - p0;
-                QVector3D edge2 = p2 - p0;
-                QVector2D deltaUV1 = uv1 - uv0;
-                QVector2D deltaUV2 = uv2 - uv0;
+                QVector3D edge1 = vertex1 - vertex0;
+                QVector3D edge2 = vertex2 - vertex0;
+                QVector2D deltaUV1 = textureVertex1 - textureVertex0;
+                QVector2D deltaUV2 = textureVertex2 - textureVertex0;
 
-                float r = 1.0F / ((deltaUV1.x() * deltaUV2.y()) - (deltaUV1.y() * deltaUV2.x()));
-                QVector3D tangent = ((edge1 * deltaUV2.y()) - (edge2 * deltaUV1.y())) * r;
+                float reciprocalDeterminant = 1.0F / ((deltaUV1.x() * deltaUV2.y()) - (deltaUV1.y() * deltaUV2.x()));
+                QVector3D tangent = ((edge1 * deltaUV2.y()) - (edge2 * deltaUV1.y())) * reciprocalDeterminant;
                 tangent.normalize();
 
-                vertices.push_back({p0, uv0, normals[vertexNormal0Index], tangent});
-                vertices.push_back({p1, uv1, normals[vertexNormal1Index], tangent});
-                vertices.push_back({p2, uv2, normals[vertexNormal2Index], tangent});
+                vertices.push_back({vertex0, textureVertex0, normals[vertexNormal0Index], tangent});
+                vertices.push_back({vertex1, textureVertex1, normals[vertexNormal1Index], tangent});
+                vertices.push_back({vertex2, textureVertex2, normals[vertexNormal2Index], tangent});
 
                 indices.push_back(currentIndex++);
                 indices.push_back(currentIndex++);
