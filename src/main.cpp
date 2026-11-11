@@ -1,4 +1,4 @@
-#include "ui/forms/mainwindow.hpp"
+#include "ui/forms/MainWindow.hpp"
 
 #include <QApplication>
 

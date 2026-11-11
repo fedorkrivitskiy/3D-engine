@@ -4,7 +4,6 @@
 #include <QOpenGLShader>
 #include <QQuaternion>
 #include <QVector2D>
-#include <QtTypes>
 
 #include <cmath>
 
