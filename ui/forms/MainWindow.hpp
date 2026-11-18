@@ -14,6 +14,7 @@ QT_END_NAMESPACE
 class QTimer;
 
 class FPSCounter;
+class FPSLogger;
 
 class MainWindow : public QMainWindow
 {
@@ -29,15 +30,15 @@ class MainWindow : public QMainWindow
     void onSettingsButtonClicked();
     void onFrameUpdate();
 
-  private:
     void initSettingsWidget();
     void initStatisticsWidget();
     void initRenderWidget();
 
-  private:
-    Ui::MainWindow *ui;
+  private: // NOLINT
+    Ui::MainWindow *ui_;
 
     std::unique_ptr<FPSCounter> counter_;
+    std::unique_ptr<FPSLogger> logger_;
 
     QTimer *updateTimer_{nullptr};
 

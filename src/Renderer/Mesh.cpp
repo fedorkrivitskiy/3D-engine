@@ -101,7 +101,7 @@ void Mesh::draw(QOpenGLShaderProgram *program, int frameIndex)
     specularTexture_->bind(3);
     program->setUniformValue("specularTexture", 3);
 
-    quintptr offset = 0;
+    int offset = 0;
 
     program->setAttributeBuffer(vertexLocation, GL_FLOAT, offset, 3, sizeof(VertexData));
 

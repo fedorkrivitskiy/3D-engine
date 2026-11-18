@@ -13,12 +13,12 @@ struct CameraSettings
 
 struct ModelSettings
 {
-    QString modelPath{};
+    QString modelPath;
 };
 
 struct SceneSettings
 {
-    QColor lightColor{};
+    QColor lightColor;
     float kAmbient{};
     float kDiffuse{};
     float kSpecular{};

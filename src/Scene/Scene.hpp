@@ -14,6 +14,10 @@ class Scene final
 
     bool init();
 
+    void drawModel(QOpenGLShaderProgram *program);
+
+    void updateModel();
+
     void rotateModel(const QVector3D &rotation);
 
     void moveModel(const QVector3D &direction);
@@ -31,8 +35,8 @@ class Scene final
     [[nodiscard]] const std::vector<size_t> &getMtls() const;
 
   private:
-    QVector3D modelPosition_{};
-    QVector3D modelRotation_{};
+    QVector3D modelPosition_;
+    QVector3D modelRotation_;
     std::vector<OBJModel> models_;
     size_t index_{};
 };

@@ -6,12 +6,13 @@
 #include <QVector2D>
 
 #include <cmath>
+#include <memory>
 
 #include "Camera/Camera.hpp"
 #include "Camera/CameraController.hpp"
 #include "Core/Core.hpp"
 #include "Core/Settings/SettingsModel.hpp"
-#include "Renderer/GeometryEngine.hpp"
+#include "Renderer/SceneRenderer.hpp"
 
 RenderWidget::RenderWidget(QWidget *parent) : QOpenGLWidget(parent)
 {
@@ -25,7 +26,7 @@ RenderWidget::~RenderWidget()
 {
     makeCurrent();
 
-    geometries_.reset();
+    renderer_.reset();
     program_.removeAllShaders();
 
     doneCurrent();
@@ -64,22 +65,26 @@ void RenderWidget::initializeGL()
 
     initShaders();
 
-    geometries_.reset(new GeometryEngine());
+    renderer_ = std::make_unique<SceneRenderer>();
 }
 
 void RenderWidget::initShaders()
 {
-    if (!program_.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/vshader.glsl"))
+    if (!program_.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/vshader.glsl")) {
         close();
+    }
 
-    if (!program_.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/fshader.glsl"))
+    if (!program_.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/fshader.glsl")) {
         close();
+    }
 
-    if (!program_.link())
+    if (!program_.link()) {
         close();
+    }
 
-    if (!program_.bind())
+    if (!program_.bind()) {
         close();
+    }
 }
 
 QMatrix4x4 RenderWidget::getProjectionMatrix()
@@ -89,8 +94,8 @@ QMatrix4x4 RenderWidget::getProjectionMatrix()
 
     SettingsModel *settingsModel = Core::get().getSettingsModel();
 
-    auto [w, h] = size();
-    float aspectRatio = static_cast<float>(w) / static_cast<float>(h > 0 ? h : 1);
+    auto [width, height] = size();
+    float aspectRatio = static_cast<float>(width) / static_cast<float>(height > 0 ? height : 1);
 
     projection.perspective(settingsModel->getFov(), aspectRatio, settingsModel->getZNear(), settingsModel->getZFar());
 
@@ -131,15 +136,15 @@ void RenderWidget::paintGL()
     program_.setUniformValue("lightPos", camera_->getEye());
     program_.setUniformValue("viewPos", camera_->getEye());
 
-    QColor c = settingsModel->getLightColor();
-    QVector4D lightColorVec(c.redF(), c.greenF(), c.blueF(), c.alphaF());
+    QColor lightColor = settingsModel->getLightColor();
+    QVector4D lightColorVec(lightColor.redF(), lightColor.greenF(), lightColor.blueF(), lightColor.alphaF());
     program_.setUniformValue("lightColor", lightColorVec);
 
     program_.setUniformValue("model_matrix", modelMatrix);
     program_.setUniformValue("view_matrix", viewMatrix);
     program_.setUniformValue("projection_matrix", projection);
 
-    geometries_->drawModel(&program_);
+    renderer_->draw(&program_);
 
-    geometries_->updateModel();
+    renderer_->updateModel();
 }

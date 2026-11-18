@@ -4,13 +4,13 @@
 
 #include "Core/Core.hpp"
 
-int main(int argc, char *argv[])
+int main(int argc, char *argv[]) // NOLINT
 {
     auto &core = Core::get();
     core.init();
 
-    QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
+    QApplication application(argc, argv);
+    MainWindow window;
+    window.show();
     return QApplication::exec();
 }

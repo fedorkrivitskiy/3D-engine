@@ -4,9 +4,10 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLWidget>
+
 #include <memory>
 
-class GeometryEngine;
+class SceneRenderer;
 class Camera;
 class CameraController;
 
@@ -39,7 +40,7 @@ class RenderWidget : public QOpenGLWidget, protected QOpenGLFunctions
 
     std::unique_ptr<Camera> camera_;
     std::unique_ptr<CameraController> cameraController_;
-    std::unique_ptr<GeometryEngine> geometries_;
+    std::unique_ptr<SceneRenderer> renderer_;
 
     QOpenGLShaderProgram program_;
 };
