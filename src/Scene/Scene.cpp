@@ -27,6 +27,11 @@ bool Scene::init()
     return true;
 }
 
+void Scene::updateModel()
+{
+    index_ = (index_ + 1) % Constants::kFramesCount;
+}
+
 void Scene::rotateModel(const QVector3D &rotation)
 {
     modelRotation_ += rotation;
@@ -35,11 +40,6 @@ void Scene::rotateModel(const QVector3D &rotation)
 void Scene::moveModel(const QVector3D &direction)
 {
     modelPosition_ += direction;
-}
-
-void Scene::update()
-{
-    index_ = (index_ + 1) % Constants::kFramesCount;
 }
 
 std::vector<Vertex> Scene::getVertices() const

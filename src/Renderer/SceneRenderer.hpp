@@ -10,15 +10,15 @@
 
 class QOpenGLShaderProgram;
 
-class GeometryEngine final : protected QOpenGLFunctions
+class SceneRenderer final : protected QOpenGLFunctions
 {
-    Q_DISABLE_COPY_MOVE(GeometryEngine)
+    Q_DISABLE_COPY_MOVE(SceneRenderer)
 
   public:
-    GeometryEngine();
-    virtual ~GeometryEngine() = default;
+    SceneRenderer();
+    virtual ~SceneRenderer() = default;
 
-    void drawModel(QOpenGLShaderProgram *program);
+    void draw(QOpenGLShaderProgram *program);
 
     void updateModel();
 
@@ -28,5 +28,5 @@ class GeometryEngine final : protected QOpenGLFunctions
 
     Scene scene_;
     Model model_;
-    int index_{};
+    size_t index{};
 };

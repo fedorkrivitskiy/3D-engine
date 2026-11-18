@@ -14,6 +14,10 @@ class Scene final
 
     bool init();
 
+    void drawModel(QOpenGLShaderProgram *program);
+
+    void updateModel();
+
     void rotateModel(const QVector3D &rotation);
 
     void moveModel(const QVector3D &direction);

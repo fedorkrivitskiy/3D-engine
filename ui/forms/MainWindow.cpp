@@ -5,6 +5,7 @@
 #include <QTimer>
 
 #include "Core/FPSCounter.hpp"
+#include "Core/FPSLogger.hpp"
 
 #include "Core/Core.hpp"
 #include "Core/Settings/SettingsModel.hpp"
@@ -16,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui_(new Ui::MainW
     showFullScreen();
 
     counter_ = std::make_unique<FPSCounter>();
+    logger_ = std::make_unique<FPSLogger>();
 
     connect(ui_->quitButton, &QPushButton::clicked, this, &QMainWindow::close);
     connect(ui_->settingsButton, &QPushButton::clicked, this, &MainWindow::onSettingsButtonClicked);
@@ -40,6 +42,7 @@ MainWindow::~MainWindow()
 void MainWindow::onFrameUpdate()
 {
     counter_->update();
+
     ui_->statsWidget->updateStats();
     ui_->renderWidget->update();
 }
@@ -61,7 +64,6 @@ void MainWindow::initSettingsWidget()
 
 void MainWindow::initStatisticsWidget()
 {
-    // ui->statsWidget->setCamera(camera_.get());
     ui_->statsWidget->setFPSCounter(counter_.get());
 
     ui_->statsWidget->raise();

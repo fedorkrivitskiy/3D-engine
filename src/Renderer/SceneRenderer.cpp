@@ -1,4 +1,4 @@
-#include "GeometryEngine.hpp"
+#include "SceneRenderer.hpp"
 
 #include <QOpenGLShaderProgram>
 #include <QString>
@@ -12,7 +12,7 @@
 #include "Core/Types.hpp"
 #include "Mesh.hpp"
 
-GeometryEngine::GeometryEngine()
+SceneRenderer::SceneRenderer()
 {
     scene_.init();
     initializeOpenGLFunctions();
@@ -21,7 +21,7 @@ GeometryEngine::GeometryEngine()
     initTextures();
 }
 
-void GeometryEngine::initTextures()
+void SceneRenderer::initTextures()
 {
     std::vector<QString> filenames = {
         "hellknight_body.png",
@@ -84,7 +84,7 @@ void GeometryEngine::initTextures()
     });
 }
 
-void GeometryEngine::initModel()
+void SceneRenderer::initModel()
 {
     const auto &modelMtls = scene_.getMtls();
 
@@ -103,7 +103,7 @@ void GeometryEngine::initModel()
             auto normals = scene_.getNormals();
             auto textureVertices = scene_.getTextureVertices();
             auto modelFaces = scene_.getFaces();
-            scene_.update();
+            scene_.updateModel();
 
             std::vector<VertexData> vertices;
             vertices.reserve(currentSize * 3);
@@ -178,12 +178,12 @@ void GeometryEngine::initModel()
     }
 }
 
-void GeometryEngine::drawModel(QOpenGLShaderProgram *program)
+void SceneRenderer::draw(QOpenGLShaderProgram *program)
 {
-    model_.draw(program, index_);
+    model_.draw(program, index);
 }
 
-void GeometryEngine::updateModel()
+void SceneRenderer::updateModel()
 {
-    index_ = (index_ + 1) % Constants::kFramesCount;
+    index = (index + 1) % Constants::kFramesCount;
 }

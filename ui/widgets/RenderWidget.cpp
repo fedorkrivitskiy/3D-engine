@@ -12,7 +12,7 @@
 #include "Camera/CameraController.hpp"
 #include "Core/Core.hpp"
 #include "Core/Settings/SettingsModel.hpp"
-#include "Renderer/GeometryEngine.hpp"
+#include "Renderer/SceneRenderer.hpp"
 
 RenderWidget::RenderWidget(QWidget *parent) : QOpenGLWidget(parent)
 {
@@ -26,7 +26,7 @@ RenderWidget::~RenderWidget()
 {
     makeCurrent();
 
-    geometries_.reset();
+    renderer_.reset();
     program_.removeAllShaders();
 
     doneCurrent();
@@ -65,7 +65,7 @@ void RenderWidget::initializeGL()
 
     initShaders();
 
-    geometries_ = std::make_unique<GeometryEngine>();
+    renderer_ = std::make_unique<SceneRenderer>();
 }
 
 void RenderWidget::initShaders()
@@ -144,7 +144,7 @@ void RenderWidget::paintGL()
     program_.setUniformValue("view_matrix", viewMatrix);
     program_.setUniformValue("projection_matrix", projection);
 
-    geometries_->drawModel(&program_);
+    renderer_->draw(&program_);
 
-    geometries_->updateModel();
+    renderer_->updateModel();
 }
