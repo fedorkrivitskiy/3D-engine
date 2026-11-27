@@ -180,10 +180,10 @@ void SceneRenderer::initModel()
 
 void SceneRenderer::draw(QOpenGLShaderProgram *program)
 {
-    model_.draw(program, index);
+    model_.draw(program, index_);
 }
 
 void SceneRenderer::updateModel()
 {
-    index = (index + 1) % Constants::kFramesCount;
+    index_ = (index_ + 1) % Constants::kFramesCount;
 }

@@ -28,5 +28,5 @@ class SceneRenderer final : protected QOpenGLFunctions
 
     Scene scene_;
     Model model_;
-    size_t index{};
+    size_t index_{};
 };

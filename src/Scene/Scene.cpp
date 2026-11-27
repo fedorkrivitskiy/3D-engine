@@ -11,13 +11,13 @@
 
 bool Scene::init()
 {
-    ModelLoader modelLoader;
+    OBJLoader modelLoader;
 
     models_.reserve(Constants::kFramesCount);
 
     for (int i = 0; i < Constants::kFramesCount; ++i)
     {
-        std::string path = std::format("{}/Hell Knight{:04d}.obj", Constants::kModelDirectoryPath, i);
+        std::string path = std::format("{}/Hell_Knight{:04d}.obj", Constants::kModelDirectoryPath, i);
 
         modelLoader.loadModel(path);
 

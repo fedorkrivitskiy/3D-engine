@@ -38,7 +38,7 @@ class Mesh final
 
     void setSpecularTexture(const QString &path);
 
-    void draw(QOpenGLShaderProgram *program, int frameIndex);
+    void draw(QOpenGLShaderProgram *program, size_t frameIndex);
 
   private:
     std::vector<QOpenGLBufferWrapper> vertices_;

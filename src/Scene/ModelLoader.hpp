@@ -1,32 +1,18 @@
 #pragma once
 
-#include <array>
-#include <cstddef>
-#include <iosfwd>
+#include "Scene/Model.hpp"
 #include <string>
-#include <string_view>
 
-#include "Model.hpp"
-
-class ModelLoader final
+class OBJLoader
 {
   public:
-    ModelLoader() = default;
+    OBJLoader() = default;
 
-    OBJModel loadModel(const std::string &path);
+    void loadModel(const std::string &path);
 
     [[nodiscard]] const OBJModel &getModel() const noexcept;
-
     [[nodiscard]] OBJModel &getModel() noexcept;
 
   private:
-    void parseVertex(std::istringstream &iss);
-    void parseNormal(std::istringstream &iss);
-    void parseTextureCoord(std::istringstream &iss);
-    void parseFace(std::istringstream &iss, int &faceCounter);
-
-    void handleMaterialUse(int &faceCounter);
-    void finalizeMaterials();
-
-    OBJModel model_{};
+    OBJModel model_;
 };

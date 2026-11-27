@@ -74,7 +74,7 @@ void Mesh::setSpecularTexture(const QString &path)
     specularTexture_ = loadTextureFromFile(path);
 }
 
-void Mesh::draw(QOpenGLShaderProgram *program, int frameIndex)
+void Mesh::draw(QOpenGLShaderProgram *program, size_t frameIndex)
 {
     const int vertexLocation = program->attributeLocation("a_position");
     const int texcoordLocation = program->attributeLocation("a_texcoord");
