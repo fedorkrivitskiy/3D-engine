@@ -12,7 +12,7 @@ class Scene final
   public:
     Scene() = default;
 
-    bool init();
+    void init();
 
     void drawModel(QOpenGLShaderProgram *program);
 
@@ -24,11 +24,11 @@ class Scene final
 
     void update();
 
-    [[nodiscard]] std::vector<Vertex> getVertices() const;
+    [[nodiscard]] const std::vector<Vertex> &getVertices() const;
 
     [[nodiscard]] const std::vector<Face> &getFaces() const;
 
-    [[nodiscard]] std::vector<Vertex> getNormals() const;
+    [[nodiscard]] const std::vector<Vertex> &getNormals() const;
 
     [[nodiscard]] const std::vector<TextureVertex> &getTextureVertices() const;
 
@@ -37,6 +37,5 @@ class Scene final
   private:
     QVector3D modelPosition_;
     QVector3D modelRotation_;
-    std::vector<OBJModel> models_;
-    size_t index_{};
+    OBJModel model_;
 };

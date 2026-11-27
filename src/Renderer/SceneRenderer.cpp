@@ -92,85 +92,73 @@ void SceneRenderer::initModel()
 
     for (size_t currentSize : modelMtls)
     {
-        std::vector<std::vector<VertexData>> meshVertices{};
-        meshVertices.reserve(Constants::kFramesCount);
+        auto modelVertices = scene_.getVertices();
+        auto normals = scene_.getNormals();
+        auto textureVertices = scene_.getTextureVertices();
+        auto modelFaces = scene_.getFaces();
 
-        std::vector<Index> meshIndicies{};
+        std::vector<VertexData> vertices;
+        vertices.reserve(currentSize * 3);
 
-        for (size_t j = 0; j < Constants::kFramesCount; ++j)
+        std::vector<Index> indices;
+        indices.reserve(currentSize * 3);
+
+        GLuint currentIndex = 0;
+
+        for (size_t j = 0; j < currentSize; ++j)
         {
-            auto modelVertices = scene_.getVertices();
-            auto normals = scene_.getNormals();
-            auto textureVertices = scene_.getTextureVertices();
-            auto modelFaces = scene_.getFaces();
-            scene_.updateModel();
+            const Face &face = modelFaces[offset + j];
 
-            std::vector<VertexData> vertices;
-            vertices.reserve(currentSize * 3);
+            const size_t vertex0Index = face[0][0];
+            const size_t vertex1Index = face[1][0];
+            const size_t vertex2Index = face[2][0];
 
-            std::vector<Index> indices;
-            indices.reserve(currentSize * 3);
+            const size_t vertexTexture0Index = face[0][1];
+            const size_t vertexTexture1Index = face[1][1];
+            const size_t vertexTexture2Index = face[2][1];
 
-            GLuint currentIndex = 0;
+            const size_t vertexNormal0Index = face[0][2];
+            const size_t vertexNormal1Index = face[1][2];
+            const size_t vertexNormal2Index = face[2][2];
 
-            for (size_t j = 0; j < currentSize; ++j)
-            {
-                const Face &face = modelFaces[offset + j];
+            const auto &vertex0 = modelVertices[vertex0Index];
+            const auto &vertex1 = modelVertices[vertex1Index];
+            const auto &vertex2 = modelVertices[vertex2Index];
 
-                const size_t vertex0Index = face[0][0];
-                const size_t vertex1Index = face[1][0];
-                const size_t vertex2Index = face[2][0];
+            const auto &textureVertex0 = textureVertices[vertexTexture0Index];
+            const auto &textureVertex1 = textureVertices[vertexTexture1Index];
+            const auto &textureVertex2 = textureVertices[vertexTexture2Index];
 
-                const size_t vertexTexture0Index = face[0][1];
-                const size_t vertexTexture1Index = face[1][1];
-                const size_t vertexTexture2Index = face[2][1];
+            QVector3D edge1 = vertex1 - vertex0;
+            QVector3D edge2 = vertex2 - vertex0;
+            QVector2D deltaUV1 = textureVertex1 - textureVertex0;
+            QVector2D deltaUV2 = textureVertex2 - textureVertex0;
 
-                const size_t vertexNormal0Index = face[0][2];
-                const size_t vertexNormal1Index = face[1][2];
-                const size_t vertexNormal2Index = face[2][2];
+            float reciprocalDeterminant = 1.0F / ((deltaUV1.x() * deltaUV2.y()) - (deltaUV1.y() * deltaUV2.x()));
+            QVector3D tangent = ((edge1 * deltaUV2.y()) - (edge2 * deltaUV1.y())) * reciprocalDeterminant;
+            tangent.normalize();
 
-                const auto &vertex0 = modelVertices[vertex0Index];
-                const auto &vertex1 = modelVertices[vertex1Index];
-                const auto &vertex2 = modelVertices[vertex2Index];
+            vertices.push_back({.position = vertex0,
+                                .texCoord = textureVertex0,
+                                .normal = normals[vertexNormal0Index],
+                                .tangent = tangent});
+            vertices.push_back({.position = vertex1,
+                                .texCoord = textureVertex1,
+                                .normal = normals[vertexNormal1Index],
+                                .tangent = tangent});
+            vertices.push_back({.position = vertex2,
+                                .texCoord = textureVertex2,
+                                .normal = normals[vertexNormal2Index],
+                                .tangent = tangent});
 
-                const auto &textureVertex0 = textureVertices[vertexTexture0Index];
-                const auto &textureVertex1 = textureVertices[vertexTexture1Index];
-                const auto &textureVertex2 = textureVertices[vertexTexture2Index];
-
-                QVector3D edge1 = vertex1 - vertex0;
-                QVector3D edge2 = vertex2 - vertex0;
-                QVector2D deltaUV1 = textureVertex1 - textureVertex0;
-                QVector2D deltaUV2 = textureVertex2 - textureVertex0;
-
-                float reciprocalDeterminant = 1.0F / ((deltaUV1.x() * deltaUV2.y()) - (deltaUV1.y() * deltaUV2.x()));
-                QVector3D tangent = ((edge1 * deltaUV2.y()) - (edge2 * deltaUV1.y())) * reciprocalDeterminant;
-                tangent.normalize();
-
-                vertices.push_back({.position = vertex0,
-                                    .texCoord = textureVertex0,
-                                    .normal = normals[vertexNormal0Index],
-                                    .tangent = tangent});
-                vertices.push_back({.position = vertex1,
-                                    .texCoord = textureVertex1,
-                                    .normal = normals[vertexNormal1Index],
-                                    .tangent = tangent});
-                vertices.push_back({.position = vertex2,
-                                    .texCoord = textureVertex2,
-                                    .normal = normals[vertexNormal2Index],
-                                    .tangent = tangent});
-
-                indices.push_back(currentIndex++);
-                indices.push_back(currentIndex++);
-                indices.push_back(currentIndex++);
-            }
-
-            meshVertices.push_back(std::move(vertices));
-            meshIndicies = std::move(indices);
+            indices.push_back(currentIndex++);
+            indices.push_back(currentIndex++);
+            indices.push_back(currentIndex++);
         }
 
         Mesh mesh{};
-        mesh.setVertices(meshVertices);
-        mesh.setIndices(meshIndicies);
+        mesh.setVertices(vertices);
+        mesh.setIndices(indices);
 
         model_.addMesh(std::move(mesh));
 
@@ -180,10 +168,5 @@ void SceneRenderer::initModel()
 
 void SceneRenderer::draw(QOpenGLShaderProgram *program)
 {
-    model_.draw(program, index_);
-}
-
-void SceneRenderer::updateModel()
-{
-    index_ = (index_ + 1) % Constants::kFramesCount;
+    model_.draw(program);
 }

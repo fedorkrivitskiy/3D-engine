@@ -26,7 +26,7 @@ class Mesh final
   public:
     Mesh();
 
-    void setVertices(const std::vector<std::vector<VertexData>> &vertices);
+    void setVertices(const std::vector<VertexData> &vertices);
 
     void setIndices(const std::vector<Index> &indices);
 
@@ -38,10 +38,10 @@ class Mesh final
 
     void setSpecularTexture(const QString &path);
 
-    void draw(QOpenGLShaderProgram *program, size_t frameIndex);
+    void draw(QOpenGLShaderProgram *program);
 
   private:
-    std::vector<QOpenGLBufferWrapper> vertices_;
+    QOpenGLBufferWrapper vertices_;
     QOpenGLBufferWrapper indexes_;
 
     std::unique_ptr<QOpenGLTexture> colorTexture_;

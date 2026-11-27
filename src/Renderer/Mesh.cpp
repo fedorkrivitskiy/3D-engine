@@ -27,24 +27,17 @@ std::unique_ptr<QOpenGLTexture> loadTextureFromFile(const QString &path)
 }
 } // namespace
 
-Mesh::Mesh() : indexes_(QOpenGLBuffer::IndexBuffer)
+Mesh::Mesh() : vertices_(QOpenGLBuffer::VertexBuffer), indexes_(QOpenGLBuffer::IndexBuffer)
 {
     indexes_.create();
 }
 
-void Mesh::setVertices(const std::vector<std::vector<VertexData>> &vertices)
+void Mesh::setVertices(const std::vector<VertexData> &vertices)
 {
-    vertices_.clear();
-
-    std::ranges::transform(vertices, std::back_inserter(vertices_), [](const std::vector<VertexData> &frameData) {
-        QOpenGLBufferWrapper buf(QOpenGLBuffer::VertexBuffer);
-        buf.create();
-        buf.bind();
-        buf.allocate(frameData.data(), static_cast<int>(frameData.size() * sizeof(VertexData)));
-        buf.release();
-
-        return buf;
-    });
+    vertices_.create();
+    vertices_.bind();
+    vertices_.allocate(vertices.data(), static_cast<int>(vertices.size() * sizeof(VertexData)));
+    vertices_.release();
 }
 
 void Mesh::setIndices(const std::vector<Index> &indices)
@@ -74,7 +67,7 @@ void Mesh::setSpecularTexture(const QString &path)
     specularTexture_ = loadTextureFromFile(path);
 }
 
-void Mesh::draw(QOpenGLShaderProgram *program, size_t frameIndex)
+void Mesh::draw(QOpenGLShaderProgram *program)
 {
     const int vertexLocation = program->attributeLocation("a_position");
     const int texcoordLocation = program->attributeLocation("a_texcoord");
@@ -86,7 +79,7 @@ void Mesh::draw(QOpenGLShaderProgram *program, size_t frameIndex)
     program->enableAttributeArray(normalLocation);
     program->enableAttributeArray(tangentLocation);
 
-    vertices_[frameIndex].bind();
+    vertices_.bind();
     indexes_.bind();
 
     colorTexture_->bind(0);
@@ -126,5 +119,5 @@ void Mesh::draw(QOpenGLShaderProgram *program, size_t frameIndex)
     program->disableAttributeArray(tangentLocation);
 
     indexes_.release();
-    vertices_[frameIndex].release();
+    vertices_.release();
 }

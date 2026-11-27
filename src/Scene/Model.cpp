@@ -15,7 +15,7 @@ const Mesh &Model::getMesh(size_t index) const
     return meshes_.at(index);
 }
 
-void Model::draw(QOpenGLShaderProgram *program, size_t frameIndex)
+void Model::draw(QOpenGLShaderProgram *program)
 {
-    std::ranges::for_each(meshes_, [=](Mesh &mesh) { mesh.draw(program, frameIndex); });
+    std::ranges::for_each(meshes_, [=](Mesh &mesh) { mesh.draw(program); });
 }

@@ -34,7 +34,7 @@ struct Model
 
     [[nodiscard]] const Mesh &getMesh(size_t index) const;
 
-    void draw(QOpenGLShaderProgram *program, size_t frameIndex);
+    void draw(QOpenGLShaderProgram *program);
 
   private:
     std::vector<Mesh> meshes_;

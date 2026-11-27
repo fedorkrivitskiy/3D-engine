@@ -145,6 +145,4 @@ void RenderWidget::paintGL()
     program_.setUniformValue("projection_matrix", projection);
 
     renderer_->draw(&program_);
-
-    renderer_->updateModel();
 }

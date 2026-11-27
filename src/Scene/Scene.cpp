@@ -9,27 +9,14 @@
 #include "Core/Types.hpp"
 #include "ModelLoader.hpp"
 
-bool Scene::init()
+void Scene::init()
 {
     OBJLoader modelLoader;
 
-    models_.reserve(Constants::kFramesCount);
+    std::string path = std::format("{}/Hell_Knight.obj", Constants::kModelDirectoryPath);
 
-    for (int i = 0; i < Constants::kFramesCount; ++i)
-    {
-        std::string path = std::format("{}/Hell_Knight{:04d}.obj", Constants::kModelDirectoryPath, i);
-
-        modelLoader.loadModel(path);
-
-        models_.push_back(modelLoader.getModel());
-    }
-
-    return true;
-}
-
-void Scene::updateModel()
-{
-    index_ = (index_ + 1) % Constants::kFramesCount;
+    modelLoader.loadModel(path);
+    model_ = modelLoader.getModel();
 }
 
 void Scene::rotateModel(const QVector3D &rotation)
@@ -42,27 +29,27 @@ void Scene::moveModel(const QVector3D &direction)
     modelPosition_ += direction;
 }
 
-std::vector<Vertex> Scene::getVertices() const
+const std::vector<Vertex> &Scene::getVertices() const
 {
-    return models_[index_].vertices;
+    return model_.vertices;
 }
 
 const std::vector<Face> &Scene::getFaces() const
 {
-    return models_[index_].faces;
+    return model_.faces;
 }
 
-std::vector<Vertex> Scene::getNormals() const
+const std::vector<Vertex> &Scene::getNormals() const
 {
-    return models_[index_].normals;
+    return model_.normals;
 }
 
 const std::vector<TextureVertex> &Scene::getTextureVertices() const
 {
-    return models_[index_].textureVertices;
+    return model_.textureVertices;
 }
 
 const std::vector<size_t> &Scene::getMtls() const
 {
-    return models_[index_].mtls;
+    return model_.mtls;
 }
